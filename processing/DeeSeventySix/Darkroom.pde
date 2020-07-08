@@ -15,11 +15,11 @@ class Darkroom {
 
   PGraphics frame;
 
-  Darkroom(String _url) {
-    resolution = 1;
-    frameScale = 4;
-    minCrystals = 15;
-    maxCrystals = 25;
+  Darkroom(String _url, int _resolution, int _frameScale) {
+    resolution = _resolution;
+    frameScale = _frameScale;
+    minCrystals = 15; //15;
+    maxCrystals = 25; //25;
     grainSize = 0.2;
     exposureSize = 0.01;
     
@@ -37,14 +37,19 @@ class Darkroom {
     int exposeTime = millis()/1000;
     for (int i=0; i<emulsion.grains.length; i++) {
       for (int j=0; j<emulsion.grains[i].crystals.length; j++) {
+        boolean hit = false;
         // TODO use quadtrees for more efficient hit testing
         for (int k=0; k<emitter.photons.length; k++) {
           if (dist(emulsion.grains[i].crystals[j].x, emulsion.grains[i].crystals[j].y, emitter.photons[k].x, emitter.photons[k].y) < exposureSize) {
             if (emitter.photons[k].energy > random(1)) {
-              emulsion.grains[i].crystals[j].exposed = true;
-              exposureCounter++;
+              hit = true;
+              break;
             }
           }
+        }
+        if (hit) {
+          emulsion.grains[i].crystals[j].exposed = true;
+          exposureCounter++;
         }
       }
     }
@@ -55,7 +60,7 @@ class Darkroom {
     int developTime = millis() / 1000;
     frame.beginDraw();
     frame.background(255);
-    frame.stroke(0);
+    frame.stroke(0, 127);
     frame.strokeWeight(1);
     
     for (int i=0; i<emulsion.grains.length; i++) {
