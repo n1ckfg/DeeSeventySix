@@ -1,12 +1,11 @@
 class Photon {
   
-  float x, y;
-  int freq;
+  float x, y, energy;
   
-  Photon(float _x, float _y, int _freq) {
+  Photon(float _x, float _y, float _energy) {
     x = _x;
     y = _y;
-    freq = _freq;
+    energy = _energy;
   }
   
 }
