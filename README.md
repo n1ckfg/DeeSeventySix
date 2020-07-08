@@ -1,2 +1,2 @@
 # DeeSeventySix
-![DeeSeventySix](/docs/test.png)
+![DeeSeventySix](/docs/images/test.png)
