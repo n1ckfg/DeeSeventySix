@@ -1,13 +1,12 @@
 class Emulsion {
   
-  int numGrains, resolution, numCrystals;
+  int numGrains, numCrystals;
   Grain[] grains;
   int minCrystals, maxCrystals;
   float grainSize;
     
-  Emulsion(int _numPhotons, int _resolution, int _minCrystals, int _maxCrystals, float _grainSize) {
-    resolution = _resolution;
-    numGrains = _numPhotons * resolution;
+  Emulsion(int _numRays, int _minCrystals, int _maxCrystals, float _grainSize) {
+    numGrains = _numRays;
     numCrystals = 0;
     minCrystals = _minCrystals;
     maxCrystals = _maxCrystals;

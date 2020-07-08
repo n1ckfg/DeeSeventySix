@@ -3,13 +3,15 @@ class Grain {
   float x, y;
   Crystal[] crystals;
   float grainSize;
+  boolean exposed, developed;
   
   Grain(float _x, float _y, float _grainSize, int _minCrystals, int _maxCrystals) {
     x = _x;
     y = _y;
     minCrystals = _minCrystals;
     maxCrystals = _maxCrystals;
-    
+    exposed = false;
+    developed = false;
     grainSize = _grainSize;
     numCrystals = (int) random(minCrystals, maxCrystals);
     crystals = new Crystal[numCrystals];
