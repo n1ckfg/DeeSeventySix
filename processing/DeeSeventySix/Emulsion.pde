@@ -1,17 +1,17 @@
 class Emulsion {
   
-  int resolution;
+  int grainResolution;
   int numGrains, numCrystals;
   Grain[] grains;
   int minCrystals, maxCrystals;
   float grainSize;
   String type;
     
-  Emulsion(PImage _img, String _type, int _resolution, int _minCrystals, int _maxCrystals, float _grainSize) {
-    resolution = _resolution;
+  Emulsion(PImage _img, String _type, int _grainResolution, int _minCrystals, int _maxCrystals, float _grainSize) {
+    grainResolution = _grainResolution;
     type = _type;
     
-    numGrains = _img.pixels.length * resolution;
+    numGrains = _img.pixels.length * grainResolution;
     
     numCrystals = 0;
     minCrystals = _minCrystals;

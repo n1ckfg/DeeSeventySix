@@ -1,33 +1,39 @@
 class Darkroom {
 
+  /* 
+  1. Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
+  If we assume crystals are all 1um, then each grain can have 15-25 crystals.
+  
+  2. A crystal acquires a latent exposure when four or more of its silver halide atoms are hit by photons.
+  The odds of an exposure for each crystal are represented here by the energy value in the grain object.
+  
+  3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
+  */
+  int minCrystals, maxCrystals, crystalThreshold; 
+  
   String url;
   boolean isColor;
   
   Emulsion[] emulsions;
-  int resolution, frameScale, exposureCounter, renderSteps, alpha;  
-  float grainSize, exposureSize;
+  int grainResolution, frameScale, exposureCounter, renderSteps, alpha;  
   color strokeColor;
-  
-  /* Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
-  A crystal acquires a latent exposure when four or more of its silver halide atoms are hit by photos.
-  If we assume crystals are 1um, then grains can have 15-25 crystals.
-  The odds of an exposure happening are represented here by the energy value in the Ray object.
-  */
-  int minCrystals, maxCrystals; 
-  
+  float grainSize, solarizeThreshold;
+
   PImage img;
   PGraphics frame;
 
   Darkroom(String _url) {
     isColor = true;
-    resolution = 2;
-    frameScale = 1;
-    alpha = 10;
-    grainSize = 0.01;
+    grainResolution = 3;
+    frameScale = 2;
+    alpha = 3;
+    grainSize = 0.001;
+    crystalThreshold = 10;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
     strokeColor = color(255);
+    solarizeThreshold = 60;
     
     url = _url;
     img = loadImage(url);
@@ -37,12 +43,12 @@ class Darkroom {
     
     if (isColor) {
       emulsions = new Emulsion[3];
-      emulsions[0] = new Emulsion(img, "r", resolution, minCrystals, maxCrystals, grainSize);
-      emulsions[1] = new Emulsion(img, "b", resolution, minCrystals, maxCrystals, grainSize);
-      emulsions[2] = new Emulsion(img, "g", resolution, minCrystals, maxCrystals, grainSize);
+      emulsions[0] = new Emulsion(img, "r", grainResolution, minCrystals, maxCrystals, grainSize);
+      emulsions[1] = new Emulsion(img, "b", grainResolution, minCrystals, maxCrystals, grainSize);
+      emulsions[2] = new Emulsion(img, "g", grainResolution, minCrystals, maxCrystals, grainSize);
     } else {
       emulsions = new Emulsion[1];
-      emulsions[0] = new Emulsion(img, "bw", resolution, minCrystals, maxCrystals, grainSize);
+      emulsions[0] = new Emulsion(img, "bw", grainResolution, minCrystals, maxCrystals, grainSize);
     }
     
     frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
@@ -61,10 +67,13 @@ class Darkroom {
   void expose() {  
     for (int h=0; h<emulsions.length; h++) {
       for (int i=0; i<emulsions[h].grains.length; i++) {
+        int crystalsExposed = 0;
         for (int j=0; j<emulsions[h].grains[i].crystals.length; j++) {
-          if (emulsions[h].grains[i].energy > random(1)) {
+          if ((emulsions[h].grains[i].energy * emulsions[h].grains[i].crystals.length < solarizeThreshold) && 
+          (crystalsExposed > crystalThreshold || emulsions[h].grains[i].energy > random(1))) {
             emulsions[h].grains[i].crystals[j].exposed = true;
             emulsions[h].grains[i].exposed = true;
+            crystalsExposed++;
             exposureCounter++;
           }
         }
