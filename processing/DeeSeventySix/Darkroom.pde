@@ -1,7 +1,7 @@
 class Darkroom {
 
   String url;
-  Emulsion emulsion;
+  Emulsion[] emulsions;
   int resolution, frameScale, atomicLimit, exposureCounter, renderSteps, alpha, sWeight;  
   float grainSize, exposureSize;
   
@@ -11,38 +11,53 @@ class Darkroom {
   The odds of an exposure happening are represented here by the energy value in the Ray object.
   */
   int minCrystals, maxCrystals; 
-
+  
+  PImage img;
   PGraphics frame;
 
   Darkroom(String _url) {
     resolution = 2;
     frameScale = 1;
     alpha = 15;
-    sWeight = 2;
-    grainSize = 0.01;
+    sWeight = 1;
+    grainSize = 0.03;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
     
     url = _url;
+    img = loadImage(url);
+    img.loadPixels();
+    
     exposureCounter = 0;
-    emulsion = new Emulsion(url, resolution, minCrystals, maxCrystals, grainSize);
+    emulsions = new Emulsion[3];
+    emulsions[0] = new Emulsion(img, "r", resolution, minCrystals, maxCrystals, grainSize);
+    emulsions[1] = new Emulsion(img, "b", resolution, minCrystals, maxCrystals, grainSize);
+    emulsions[2] = new Emulsion(img, "g", resolution, minCrystals, maxCrystals, grainSize);
 
-    frame = createGraphics(emulsion.img.width * frameScale, emulsion.img.height * frameScale, P2D);
+    frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
     frame.beginDraw();
+    frame.strokeWeight(sWeight);
+    frame.blendMode(NORMAL);
     frame.background(0);
+    frame.blendMode(ADD);
     frame.endDraw();
     
-    println("width: " + frame.width + "   height: " + frame.height + "   grains: " + emulsion.numGrains + "   crystals: " + emulsion.numCrystals);    
+    println("width: " + frame.width + "   height: " + frame.height);
+    for (int i=0; i<emulsions.length; i++) {
+      println("channel " + (i+1) + " -- grains: " + emulsions[i].numGrains + "   crystals: " + emulsions[i].numCrystals);  
+    }
   }
 
-  void expose() {    
-    for (int i=0; i<emulsion.grains.length; i++) {
-      for (int j=0; j<emulsion.grains[i].crystals.length; j++) {
-        if (emulsion.grains[i].energy > random(1)) {
-          emulsion.grains[i].crystals[j].exposed = true;
-          emulsion.grains[i].exposed = true;
-          exposureCounter++;
+  void expose() {  
+    for (int h=0; h<emulsions.length; h++) {
+      for (int i=0; i<emulsions[h].grains.length; i++) {
+        for (int j=0; j<emulsions[h].grains[i].crystals.length; j++) {
+          if (emulsions[h].grains[i].energy > random(1)) {
+            emulsions[h].grains[i].crystals[j].exposed = true;
+            emulsions[h].grains[i].exposed = true;
+            exposureCounter++;
+          }
         }
       }
     }
@@ -52,19 +67,32 @@ class Darkroom {
     frame.beginDraw();
     
     for (int i=0; i<renderSteps; i++) {
-      int grain = (int) random(emulsion.grains.length);
-      if (emulsion.grains[grain].exposed && !emulsion.grains[grain].developed) {
-        for (int j=0; j<emulsion.grains[grain].crystals.length; j++) {
-          if (emulsion.grains[grain].crystals[j].exposed) {
-            float x = emulsion.grains[grain].crystals[j].x * frame.width;
-            float y = emulsion.grains[grain].crystals[j].y * frame.height;
-            
+      for (int h=0; h<emulsions.length; h++) {
+        switch(emulsions[h].type) {
+          case "r":
+            frame.stroke(255, 0, 0, alpha);
+            break;
+          case "g":
+            frame.stroke(0, 255, 0, alpha);
+            break;
+          case "b":
+            frame.stroke(0, 0, 255, alpha);
+            break;
+          default:
             frame.stroke(255, alpha);
-            frame.strokeWeight(sWeight);
-            frame.point(x, y);
-          }
+            break;
         }
-        emulsion.grains[grain].developed = true;
+        int grain = (int) random(emulsions[h].grains.length);
+        if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
+          for (int j=0; j<emulsions[h].grains[grain].crystals.length; j++) {
+            if (emulsions[h].grains[grain].crystals[j].exposed) {
+              float x = emulsions[h].grains[grain].crystals[j].x * frame.width;
+              float y = emulsions[h].grains[grain].crystals[j].y * frame.height;
+              frame.point(x, y);
+            }
+          }
+          emulsions[h].grains[grain].developed = true;
+        }
       }
     }
     
@@ -72,7 +100,7 @@ class Darkroom {
   }
   
   void drawSource() {
-    image(emulsion.img, 0, 0, width, height);
+    image(img, 0, 0, width, height);
   }
   
   void draw() {

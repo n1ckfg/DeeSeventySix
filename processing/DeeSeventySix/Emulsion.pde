@@ -1,21 +1,17 @@
 class Emulsion {
   
-  String url;
   int resolution;
-  PImage img;
   int numGrains, numCrystals;
   Grain[] grains;
   int minCrystals, maxCrystals;
   float grainSize;
+  String type;
     
-  Emulsion(String _url, int _resolution, int _minCrystals, int _maxCrystals, float _grainSize) {
-    url = _url;
+  Emulsion(PImage _img, String _type, int _resolution, int _minCrystals, int _maxCrystals, float _grainSize) {
     resolution = _resolution;
+    type = _type;
     
-    img = loadImage(url);
-    img.loadPixels();
-    
-    numGrains = img.pixels.length * resolution;
+    numGrains = _img.pixels.length * resolution;
     
     numCrystals = 0;
     minCrystals = _minCrystals;
@@ -24,15 +20,29 @@ class Emulsion {
         
     grains = new Grain[numGrains];
     for (int i=0; i<grains.length; i++) {
-      float x = random(img.width);
-      float normX = x / (float)img.width;
+      float x = random(_img.width);
+      float normX = x / (float)_img.width;
       
-      float y = random(img.height);
-      float normY = y / (float)img.height;
+      float y = random(_img.height);
+      float normY = y / (float)_img.height;
       
-      int loc = (int) x + (int) y * img.width;
-      color c = img.pixels[loc];
-      float energy = ((red(c) + green(c) + blue(c))/ 3.0) / 255.0;
+      int loc = (int) x + (int) y * _img.width;
+      color c = _img.pixels[loc];
+      float energy = 0;
+      switch (type) {
+        case "r":
+          energy = red(c) / 255.0;
+          break;
+        case "g":
+          energy = green(c) / 255.0;
+          break;
+        case "b":
+          energy = blue(c) / 255.0;
+          break;
+        default:
+          energy = brightness(c) / 255.0;
+          break;
+      }
 
       grains[i] = new Grain(normX, normY, energy, grainSize, minCrystals, maxCrystals);
     
