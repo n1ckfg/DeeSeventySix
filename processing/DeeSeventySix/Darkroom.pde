@@ -15,14 +15,14 @@ class Darkroom {
   PGraphics frame;
 
   Darkroom(String _url) {
-    resolution = 3;
+    resolution = 2;
     frameScale = 1;
+    alpha = 15;
+    sWeight = 2;
+    grainSize = 0.01;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
-    grainSize = 0.02;
     renderSteps = 1000;
-    alpha = 10;
-    sWeight = 1;
     
     url = _url;
     exposureCounter = 0;
@@ -67,6 +67,7 @@ class Darkroom {
         emulsion.grains[grain].developed = true;
       }
     }
+    
     frame.endDraw();
   }
   
