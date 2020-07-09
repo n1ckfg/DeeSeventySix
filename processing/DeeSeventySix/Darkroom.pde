@@ -1,9 +1,8 @@
 class Darkroom {
 
   String url;
-  Emitter emitter;
   Emulsion emulsion;
-  int resolution, frameScale, atomicLimit, exposureCounter, renderSteps;  
+  int resolution, frameScale, atomicLimit, exposureCounter, renderSteps, alpha, sWeight;  
   float grainSize, exposureSize;
   
   /* Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
@@ -15,73 +14,42 @@ class Darkroom {
 
   PGraphics frame;
 
-  Darkroom(String _url, int _resolution, int _frameScale) {
-    resolution = _resolution;
-    frameScale = _frameScale;
+  Darkroom(String _url) {
+    resolution = 3;
+    frameScale = 1;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
-    grainSize = 0.2;
-    exposureSize = 0.01;
+    grainSize = 0.02;
     renderSteps = 1000;
+    alpha = 10;
+    sWeight = 1;
     
     url = _url;
     exposureCounter = 0;
-    emitter = new Emitter(url, resolution);
-    emulsion = new Emulsion(emitter.numRays, minCrystals, maxCrystals, grainSize);
+    emulsion = new Emulsion(url, resolution, minCrystals, maxCrystals, grainSize);
 
-    frame = createGraphics(emitter.img.width * frameScale, emitter.img.height * frameScale, P2D);
+    frame = createGraphics(emulsion.img.width * frameScale, emulsion.img.height * frameScale, P2D);
     frame.beginDraw();
     frame.background(0);
     frame.endDraw();
     
-    println("width: " + frame.width + "   height: " + frame.height + "   rays: " + emitter.numRays + "   grains: " + emulsion.numGrains + "   crystals: " + emulsion.numCrystals);    
+    println("width: " + frame.width + "   height: " + frame.height + "   grains: " + emulsion.numGrains + "   crystals: " + emulsion.numCrystals);    
   }
 
-  void expose() {
-    int exposeTime = millis()/1000;
-    
-    /*
-    for (int i=0; i<emulsion.grains.length; i++) {
-      for (int j=0; j<emitter.rays.length; j++) {
-        for (int k=0; k<emulsion.grains[i].crystals.length; k++) {
-          if (dist(emulsion.grains[i].crystals[k].x, emulsion.grains[i].crystals[k].y, emitter.rays[j].x, emitter.rays[j].y) < exposureSize) {
-            if (emitter.rays[j].energy > random(1) && !emulsion.grains[i].crystals[k].exposed) {
-              emulsion.grains[i].crystals[k].exposed = true;
-              emulsion.grains[i].exposed = true;
-              exposureCounter++;
-            }
-          }
-        }
-      }
-    }
-    */
+  void expose() {    
     for (int i=0; i<emulsion.grains.length; i++) {
       for (int j=0; j<emulsion.grains[i].crystals.length; j++) {
-        boolean hit = false;
-        // TODO use quadtrees for more efficient hit testing
-        for (int k=0; k<emitter.rays.length; k++) {
-          if (dist(emulsion.grains[i].crystals[j].x, emulsion.grains[i].crystals[j].y, emitter.rays[k].x, emitter.rays[k].y) < exposureSize) {
-            if (emitter.rays[k].energy > random(1)) {
-              hit = true;
-              break;
-            }
-          }
-        }
-        if (hit) {
+        if (emulsion.grains[i].energy > random(1)) {
           emulsion.grains[i].crystals[j].exposed = true;
           emulsion.grains[i].exposed = true;
           exposureCounter++;
         }
       }
     }
-    
-    println("Exposed " + exposureCounter + " / " + emulsion.numCrystals + " crystals in " + (millis()/1000 - exposeTime) + " seconds.");
   }
 
   void develop() {
     frame.beginDraw();
-    frame.stroke(255, 25);
-    frame.strokeWeight(3);
     
     for (int i=0; i<renderSteps; i++) {
       int grain = (int) random(emulsion.grains.length);
@@ -91,6 +59,8 @@ class Darkroom {
             float x = emulsion.grains[grain].crystals[j].x * frame.width;
             float y = emulsion.grains[grain].crystals[j].y * frame.height;
             
+            frame.stroke(255, alpha);
+            frame.strokeWeight(sWeight);
             frame.point(x, y);
           }
         }
@@ -98,7 +68,13 @@ class Darkroom {
       }
     }
     frame.endDraw();
-
+  }
+  
+  void drawSource() {
+    image(emulsion.img, 0, 0, width, height);
+  }
+  
+  void draw() {
     image(frame, 0, 0, width, height);
   }
   
