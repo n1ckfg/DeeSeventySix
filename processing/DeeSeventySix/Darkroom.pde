@@ -1,8 +1,10 @@
 class Darkroom {
 
   String url;
+  boolean isColor;
+  
   Emulsion[] emulsions;
-  int resolution, frameScale, atomicLimit, exposureCounter, renderSteps, alpha, sWeight;  
+  int resolution, frameScale, exposureCounter, renderSteps, alpha;  
   float grainSize, exposureSize;
   
   /* Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
@@ -16,11 +18,11 @@ class Darkroom {
   PGraphics frame;
 
   Darkroom(String _url) {
+    isColor = true;
     resolution = 2;
     frameScale = 1;
-    alpha = 15;
-    sWeight = 1;
-    grainSize = 0.03;
+    alpha = 10;
+    grainSize = 0.01;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
@@ -30,14 +32,20 @@ class Darkroom {
     img.loadPixels();
     
     exposureCounter = 0;
-    emulsions = new Emulsion[3];
-    emulsions[0] = new Emulsion(img, "r", resolution, minCrystals, maxCrystals, grainSize);
-    emulsions[1] = new Emulsion(img, "b", resolution, minCrystals, maxCrystals, grainSize);
-    emulsions[2] = new Emulsion(img, "g", resolution, minCrystals, maxCrystals, grainSize);
-
+    
+    if (isColor) {
+      emulsions = new Emulsion[3];
+      emulsions[0] = new Emulsion(img, "r", resolution, minCrystals, maxCrystals, grainSize);
+      emulsions[1] = new Emulsion(img, "b", resolution, minCrystals, maxCrystals, grainSize);
+      emulsions[2] = new Emulsion(img, "g", resolution, minCrystals, maxCrystals, grainSize);
+    } else {
+      emulsions = new Emulsion[1];
+      emulsions[0] = new Emulsion(img, "bw", resolution, minCrystals, maxCrystals, grainSize);
+    }
+    
     frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
     frame.beginDraw();
-    frame.strokeWeight(sWeight);
+    frame.strokeWeight(frameScale);
     frame.blendMode(NORMAL);
     frame.background(0);
     frame.blendMode(ADD);

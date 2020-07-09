@@ -3,7 +3,7 @@ boolean toggleImg = false;
 
 void setup() {
   size(50, 50, P2D);
-  darkroom = new Darkroom("blockbuster.jpg"); 
+  darkroom = new Darkroom("blockbuster.jpg");
   surface.setSize(darkroom.frame.width, darkroom.frame.height);
   
   darkroom.expose();
