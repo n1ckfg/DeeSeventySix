@@ -6,6 +6,7 @@ class Darkroom {
   Emulsion[] emulsions;
   int resolution, frameScale, exposureCounter, renderSteps, alpha;  
   float grainSize, exposureSize;
+  color strokeColor;
   
   /* Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
   A crystal acquires a latent exposure when four or more of its silver halide atoms are hit by photos.
@@ -26,6 +27,7 @@ class Darkroom {
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
+    strokeColor = color(255);
     
     url = _url;
     img = loadImage(url);
@@ -45,7 +47,6 @@ class Darkroom {
     
     frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
     frame.beginDraw();
-    frame.strokeWeight(frameScale);
     frame.blendMode(NORMAL);
     frame.background(0);
     frame.blendMode(ADD);
@@ -78,16 +79,16 @@ class Darkroom {
       for (int h=0; h<emulsions.length; h++) {
         switch(emulsions[h].type) {
           case "r":
-            frame.stroke(255, 0, 0, alpha);
+            strokeColor = color(255, 0, 0);
             break;
           case "g":
-            frame.stroke(0, 255, 0, alpha);
+            strokeColor = color(0, 255, 0);
             break;
           case "b":
-            frame.stroke(0, 0, 255, alpha);
+            strokeColor = color(0, 0, 255);
             break;
           default:
-            frame.stroke(255, alpha);
+            strokeColor = color(255);
             break;
         }
         int grain = (int) random(emulsions[h].grains.length);
@@ -96,6 +97,11 @@ class Darkroom {
             if (emulsions[h].grains[grain].crystals[j].exposed) {
               float x = emulsions[h].grains[grain].crystals[j].x * frame.width;
               float y = emulsions[h].grains[grain].crystals[j].y * frame.height;
+              frame.strokeWeight(frameScale*2);
+              frame.stroke(strokeColor, alpha/2);
+              frame.point(x, y);
+              frame.strokeWeight(frameScale);
+              frame.stroke(strokeColor, alpha);
               frame.point(x, y);
             }
           }
