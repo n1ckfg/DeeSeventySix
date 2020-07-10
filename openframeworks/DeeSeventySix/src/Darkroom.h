@@ -6,6 +6,7 @@
 class Darkroom {
     
     public:
+        Darkroom();
         Darkroom(string _url);
         void expose();
         void develop();

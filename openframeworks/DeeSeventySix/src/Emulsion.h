@@ -6,7 +6,7 @@
 class Emulsion {
     
     public:
-        Emulsion(ofImage _img, string _emulsionType, int _grainResolution, int _minCrystals, int _maxCrystals, float _grainSize);
+        Emulsion(ofImage& _img, string _emulsionType, int _grainResolution, int _minCrystals, int _maxCrystals, float _grainSize);
     
         int grainResolution;
         int numGrains, numCrystals;
