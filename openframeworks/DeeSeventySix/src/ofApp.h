@@ -1,9 +1,7 @@
 #pragma once
+
 #include "ofMain.h"
-#include "Crystal.h"
 #include "Darkroom.h"
-#include "Emulsion.h"
-#include "Grain.h"
 
 class ofApp : public ofBaseApp {
     
@@ -13,4 +11,7 @@ class ofApp : public ofBaseApp {
         void draw();
         void keyPressed(int key);
     
+        Darkroom darkroom;
+        bool toggleImg;
+
 };
