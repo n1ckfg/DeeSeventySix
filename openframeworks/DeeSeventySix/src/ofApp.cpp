@@ -2,9 +2,10 @@
 
 void ofApp::setup() {
     settings.loadFile("settings.xml");
+    imageUrl = settings.getValue("settings:image_url", "blockbuster_mid.jpg");
     isColor = (bool) settings.getValue("settings:color_film", 0);
     toggleImg = false;
-    darkroom = Darkroom("blockbuster_mid.jpg", isColor);
+    darkroom = Darkroom(imageUrl, isColor);
     ofSetWindowShape(darkroom.img.getWidth(), darkroom.img.getHeight());
     darkroom.expose();
     

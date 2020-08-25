@@ -1,2 +1,5 @@
+Image Url
+blockbuster_mid.jpg
+
 Color Film
 false

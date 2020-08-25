@@ -15,5 +15,6 @@ class ofApp : public ofBaseApp {
         Darkroom darkroom;
         bool toggleImg, isColor;
         ofxXmlSettings settings;
+        string imageUrl;
 
 };

@@ -100,5 +100,5 @@ void Darkroom::drawSource() {
 }
 
 void Darkroom::draw() {
-    frame.draw(0, 0, ofGetWidth(), ofGetHeight());
+    frame.draw(0, 0);
 }

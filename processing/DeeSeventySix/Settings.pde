@@ -12,6 +12,7 @@ class Settings {
     try {
       data = loadStrings(name);
       for (int i=0;i<data.length;i++) {
+        if (data[i].equals("Image Url")) imageUrl = readString(i);
         if (data[i].equals("Color Film")) isColor = readBoolean(i);
       }
     } 
