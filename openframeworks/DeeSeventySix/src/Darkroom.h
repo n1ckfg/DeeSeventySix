@@ -7,7 +7,7 @@ class Darkroom {
     
     public:
         Darkroom();
-        Darkroom(string _url);
+        Darkroom(string _url, bool _isColor);
         void expose();
         void develop();
         void drawSource();

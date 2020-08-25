@@ -1,9 +1,12 @@
 Darkroom darkroom;
 boolean toggleImg;
+Settings settings;
+boolean isColor = false;
 
 void setup() {
   size(50, 50, P2D);
-  darkroom = new Darkroom("blockbuster_mid.jpg");
+  settings = new Settings("settings.txt");
+  darkroom = new Darkroom("blockbuster_mid.jpg", isColor);
   surface.setSize(darkroom.frame.width, darkroom.frame.height);
   
   toggleImg = false;

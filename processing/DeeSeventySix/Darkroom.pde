@@ -22,8 +22,8 @@ class Darkroom {
   PImage img;
   PGraphics frame;
 
-  Darkroom(String _url) {
-    isColor = true;
+  Darkroom(String _url, boolean _isColor) {
+    isColor = _isColor;
     grainResolution = 3;
     frameScale = 2;
     alpha = 3;

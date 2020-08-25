@@ -1,9 +1,15 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
+    settings.loadFile("settings.xml");
+    isColor = (bool) settings.getValue("settings:color_film", 0);
     toggleImg = false;
-    darkroom = Darkroom("blockbuster_mid.jpg");
+    darkroom = Darkroom("blockbuster_mid.jpg", isColor);
+    ofSetWindowShape(darkroom.img.getWidth(), darkroom.img.getHeight());
     darkroom.expose();
+    
+    ofSetVerticalSync(false);
+    ofSetFrameRate(60);
 }
 
 void ofApp::update() {

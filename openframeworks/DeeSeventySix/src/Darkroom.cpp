@@ -4,8 +4,8 @@ Darkroom::Darkroom() {
     //
 }
 
-Darkroom::Darkroom(string _url) {
-    isColor = false;
+Darkroom::Darkroom(string _url, bool _isColor) {
+    isColor = _isColor;
     grainResolution = 1;
     frameScale = 2;
     alpha = 3;
@@ -100,5 +100,5 @@ void Darkroom::drawSource() {
 }
 
 void Darkroom::draw() {
-    frame.draw(0, 0);
+    frame.draw(0, 0, ofGetWidth(), ofGetHeight());
 }
