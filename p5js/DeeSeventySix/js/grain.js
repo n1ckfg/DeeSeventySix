@@ -1,25 +1,22 @@
-class Grain {  
-  int numCrystals, minCrystals, maxCrystals;
-  float x, y;
-  Crystal[] crystals;
-  float grainSize, energy;
-  boolean exposed, developed;
-  
-  Grain(float _x, float _y, float _energy, float _grainSize, int _minCrystals, int _maxCrystals) {
-    x = _x;
-    y = _y;
-    minCrystals = _minCrystals;
-    maxCrystals = _maxCrystals;
-    energy = _energy;
-    exposed = false;
-    developed = false;
-    grainSize = _grainSize;
-    numCrystals = (int) random(minCrystals, maxCrystals);
-    crystals = new Crystal[numCrystals];
+"use strict";
+
+class Grain {    
     
-    for (int i=0; i<crystals.length; i++) {
-      crystals[i] = new Crystal(x + random(grainSize) - random(grainSize), y + random(grainSize) - random(grainSize));
+    constructor(_x, _y, _energy, _grainSize, _minCrystals, _maxCrystals) {  // float, float, float, float, int, int
+        this.x = _x;
+        this.y = _y;
+        this.minCrystals = _minCrystals;
+        this.maxCrystals = _maxCrystals;
+        this.energy = _energy;
+        this.exposed = false;
+        this.developed = false;
+        this.grainSize = _grainSize;
+        this.numCrystals = parseInt(random(this.minCrystals, this.maxCrystals));
+        this.crystals = [];
+        
+        for (let i=0; i<this.numCrystals; i++) {
+            crystals.push(new Crystal(this.x + random(this.grainSize) - random(this.grainSize), this.y + random(this.grainSize) - random(this.grainSize)));
+        }
     }
-  }
-  
+    
 }

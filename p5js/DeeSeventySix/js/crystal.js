@@ -1,12 +1,11 @@
+"use strict";
+
 class Crystal {
-  
-  float x, y;
-  boolean exposed;
-  
-  Crystal(float _x, float _y) {
-    x = _x;
-    y = _y;
-    exposed = false;
-  }
-  
+       
+    constructor(_x, _y) {  // float, float
+        this.x = _x;
+        this.y = _y;
+        this.exposed = false;
+    }
+    
 }

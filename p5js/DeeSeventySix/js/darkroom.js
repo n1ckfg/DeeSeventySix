@@ -1,133 +1,121 @@
+"use strict";
+
 class Darkroom {
 
-  /* 
-  1. Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
-  If we assume crystals are all 1um, then each grain can have 15-25 crystals.
-  
-  2. A crystal acquires a latent exposure when four or more of its silver halide atoms are hit by photons.
-  The odds of an exposure for each crystal are represented here by the energy value in the grain object.
-  
-  3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
-  */
-  int minCrystals, maxCrystals, crystalThreshold; 
-  
-  String url;
-  boolean isColor;
-  
-  Emulsion[] emulsions;
-  int grainResolution, frameScale, exposureCounter, renderSteps, alpha;  
-  color strokeColor;
-  float grainSize, solarizeThreshold;
+    /* 
+    1. Crystals can be 0.2um–2um, with most being 0.5um–1.0um. Grains can be 15um–25um.
+    If we assume crystals are all 1um, then each grain can have 15-25 crystals.
+    
+    2. A crystal acquires a latent exposure when four or more of its silver halide atoms are hit by photons.
+    The odds of an exposure for each crystal are represented here by the energy value in the grain object.
+    
+    3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
+    */
 
-  PImage img;
-  PGraphics frame;
-
-  Darkroom(String _url, boolean _isColor) {
-    isColor = _isColor;
-    grainResolution = 3;
-    frameScale = 2;
-    alpha = 3;
-    grainSize = 0.001;
-    crystalThreshold = 10;
-    minCrystals = 15; //15;
-    maxCrystals = 25; //25;
-    renderSteps = 1000;
-    strokeColor = color(255);
-    solarizeThreshold = 60;
-    
-    url = _url;
-    img = loadImage(url);
-    img.loadPixels();
-    
-    exposureCounter = 0;
-    
-    if (isColor) {
-      emulsions = new Emulsion[3];
-      emulsions[0] = new Emulsion(img, "r", grainResolution, minCrystals, maxCrystals, grainSize);
-      emulsions[1] = new Emulsion(img, "b", grainResolution, minCrystals, maxCrystals, grainSize);
-      emulsions[2] = new Emulsion(img, "g", grainResolution, minCrystals, maxCrystals, grainSize);
-    } else {
-      emulsions = new Emulsion[1];
-      emulsions[0] = new Emulsion(img, "bw", grainResolution, minCrystals, maxCrystals, grainSize);
-    }
-    
-    frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
-    frame.beginDraw();
-    frame.blendMode(NORMAL);
-    frame.background(0);
-    frame.blendMode(ADD);
-    frame.endDraw();
-    
-    println("width: " + frame.width + "   height: " + frame.height);
-    for (int i=0; i<emulsions.length; i++) {
-      println("channel " + (i+1) + " -- grains: " + emulsions[i].numGrains + "   crystals: " + emulsions[i].numCrystals);  
-    }
-  }
-
-  void expose() {  
-    for (int h=0; h<emulsions.length; h++) {
-      for (int i=0; i<emulsions[h].grains.length; i++) {
-        int crystalsExposed = 0;
-        for (int j=0; j<emulsions[h].grains[i].crystals.length; j++) {
-          if ((emulsions[h].grains[i].energy * emulsions[h].grains[i].crystals.length < solarizeThreshold) && 
-          (crystalsExposed > crystalThreshold || emulsions[h].grains[i].energy > random(1))) {
-            emulsions[h].grains[i].crystals[j].exposed = true;
-            emulsions[h].grains[i].exposed = true;
-            crystalsExposed++;
-            exposureCounter++;
-          }
+    constructor(_img, _isColor) {  // PImage, bool
+        this.isColor = _isColor;  // bool
+        this.grainResolution = 3;
+        this.frameScale = 2;
+        this.alpha = 3;
+        this.grainSize = 0.001;
+        this.crystalThreshold = 10;
+        this.minCrystals = 15; //15;
+        this.maxCrystals = 25; //25;
+        this.renderSteps = 1000;
+        this.strokeColor = color(255);
+        this.solarizeThreshold = 60.0;
+        
+        this.img = _img;
+        this.img.loadPixels();
+        
+        this.exposureCounter = 0;
+        this.emulsions = [];
+        
+        if (isColor) {
+            this.emulsions.push(new Emulsion(this.img, "r", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+            this.emulsions.push(new Emulsion(this.img, "b", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+            this.emulsions.push(new Emulsion(this.img, "g", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+        } else {
+            this.emulsions.push(new Emulsion(this.img, "bw", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
         }
-      }
-    }
-  }
-
-  void develop() {
-    frame.beginDraw();
-    
-    for (int i=0; i<renderSteps; i++) {
-      for (int h=0; h<emulsions.length; h++) {
-        switch(emulsions[h].type) {
-          case "r":
-            strokeColor = color(255, 0, 0);
-            break;
-          case "g":
-            strokeColor = color(0, 255, 0);
-            break;
-          case "b":
-            strokeColor = color(0, 0, 255);
-            break;
-          default:
-            strokeColor = color(255);
-            break;
+        
+        this.frame = this.createGraphics(this.img.width * this.frameScale, this.img.height * this.frameScale);
+        this.frame.beginDraw();
+        this.frame.blendMode(NORMAL);
+        this.frame.background(0);
+        this.frame.blendMode(ADD);
+        this.frame.endDraw();
+        
+        console.log("width: " + this.frame.width + "     height: " + this.frame.height);
+        for (let i=0; i<this.emulsions.length; i++) {
+            console.log("channel " + (i+1) + " -- grains: " + this.emulsions[i].numGrains + "     crystals: " + this.emulsions[i].numCrystals);    
         }
-        int grain = (int) random(emulsions[h].grains.length);
-        if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
-          for (int j=0; j<emulsions[h].grains[grain].crystals.length; j++) {
-            if (emulsions[h].grains[grain].crystals[j].exposed) {
-              float x = emulsions[h].grains[grain].crystals[j].x * frame.width;
-              float y = emulsions[h].grains[grain].crystals[j].y * frame.height;
-              frame.strokeWeight(frameScale*2);
-              frame.stroke(strokeColor, alpha/2);
-              frame.point(x, y);
-              frame.strokeWeight(frameScale);
-              frame.stroke(strokeColor, alpha);
-              frame.point(x, y);
+    }
+
+    expose() {    
+        for (let h=0; h<this.emulsions.length; h++) {
+            for (let i=0; i<this.emulsions[h].grains.length; i++) {
+                let crystalsExposed = 0;
+                for (let j=0; j<this.emulsions[h].grains[i].crystals.length; j++) {
+                    if ((this.emulsions[h].grains[i].energy * this.emulsions[h].grains[i].crystals.length < this.solarizeThreshold) && 
+                    (crystalsExposed > this.crystalThreshold || this.emulsions[h].grains[i].energy > random(1))) {
+                        this.emulsions[h].grains[i].crystals[j].exposed = true;
+                        this.emulsions[h].grains[i].exposed = true;
+                        crystalsExposed++;
+                        this.exposureCounter++;
+                    }
+                }
             }
-          }
-          emulsions[h].grains[grain].developed = true;
         }
-      }
+    }
+
+    develop() {
+        this.frame.beginDraw();
+        
+        for (let i=0; i<this.renderSteps; i++) {
+            for (let h=0; h<this.emulsions.length; h++) {
+                switch(this.emulsions[h].type) {
+                    case "r":
+                        this.strokeColor = createColor(255, 0, 0);
+                        break;
+                    case "g":
+                        this.strokeColor = createColor(0, 255, 0);
+                        break;
+                    case "b":
+                        this.strokeColor = createColor(0, 0, 255);
+                        break;
+                    default:
+                        this.strokeColor = createColor(255);
+                        break;
+                }
+                let grain = parseInt(random(this.emulsions[h].grains.length));
+                if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
+                    for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
+                        if (this.emulsions[h].grains[grain].crystals[j].exposed) {
+                            let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
+                            let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
+                            this.frame.strokeWeight(frameScale*2);
+                            this.frame.stroke(strokeColor, alpha/2);
+                            this.frame.point(x, y);
+                            this.frame.strokeWeight(frameScale);
+                            this.frame.stroke(strokeColor, alpha);
+                            this.frame.point(x, y);
+                        }
+                    }
+                    this.emulsions[h].grains[grain].developed = true;
+                }
+            }
+        }
+        
+        this.frame.endDraw();
     }
     
-    frame.endDraw();
-  }
-  
-  void drawSource() {
-    image(img, 0, 0, width, height);
-  }
-  
-  void draw() {
-    image(frame, 0, 0, width, height);
-  }
-  
+    drawSource() {
+        image(this.img, 0, 0, width, height);
+    }
+    
+    draw() {
+        image(this.frame, 0, 0, width, height);
+    }
+    
 }

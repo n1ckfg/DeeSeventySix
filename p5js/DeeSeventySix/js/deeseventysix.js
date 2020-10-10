@@ -1,30 +1,31 @@
-Darkroom darkroom;
-boolean toggleImg;
-Settings settings;
-boolean isColor = false;
-String imageUrl;
+"use strict";
 
-void setup() {
-  size(50, 50, P2D);
-  settings = new Settings("settings.txt");
-  darkroom = new Darkroom(imageUrl, isColor);
-  surface.setSize(darkroom.frame.width, darkroom.frame.height);
-  
-  toggleImg = false;
-  
-  darkroom.expose();
+let darkroom;  // Darkroom
+let toggleImg;  // bool
+let isColor = false;
+let img;  // PImage
+
+function preload() {
+    img = loadImage("./images/blockbuster_small.jpg");
 }
 
-void draw() {
-  background(0);
-  
-  darkroom.develop();
-  
-  if (toggleImg) {
-    darkroom.drawSource();
-  } else {
-    darkroom.draw();
-  }
-  
-  surface.setTitle("" + frameRate);
+function setup() {
+    darkroom = new Darkroom(img, isColor);
+    createCanvas(darkroom.frame.width, darkroom.frame.height);
+    
+    toggleImg = false;
+    
+    darkroom.expose();
+}
+
+function draw() {
+    background(0);
+    
+    darkroom.develop();
+    
+    if (toggleImg) {
+        darkroom.drawSource();
+    } else {
+        darkroom.draw();
+    }    
 }

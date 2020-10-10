@@ -1,54 +1,50 @@
-class Emulsion {
-  
-  int grainResolution;
-  int numGrains, numCrystals;
-  Grain[] grains;
-  int minCrystals, maxCrystals;
-  float grainSize;
-  String type;
-    
-  Emulsion(PImage _img, String _type, int _grainResolution, int _minCrystals, int _maxCrystals, float _grainSize) {
-    grainResolution = _grainResolution;
-    type = _type;
-    
-    numGrains = _img.pixels.length * grainResolution;
-    
-    numCrystals = 0;
-    minCrystals = _minCrystals;
-    maxCrystals = _maxCrystals;
-    grainSize = _grainSize;
-        
-    grains = new Grain[numGrains];
-    for (int i=0; i<grains.length; i++) {
-      float x = random(_img.width);
-      float normX = x / (float)_img.width;
-      
-      float y = random(_img.height);
-      float normY = y / (float)_img.height;
-      
-      int loc = (int) x + (int) y * _img.width;
-      color c = _img.pixels[loc];
-      float energy = 0;
-      switch (type) {
-        case "r":
-          energy = red(c) / 255.0;
-          break;
-        case "g":
-          energy = green(c) / 255.0;
-          break;
-        case "b":
-          energy = blue(c) / 255.0;
-          break;
-        default:
-          energy = brightness(c) / 255.0;
-          break;
-      }
+"use strict";
 
-      grains[i] = new Grain(normX, normY, energy, grainSize, minCrystals, maxCrystals);
-    
-      numCrystals += grains[i].crystals.length;
+class Emulsion {
+            
+    constructor(_img, _type, _grainResolution, _minCrystals, _maxCrystals, _grainSize) {  // PImage, string, int, int, int, float
+        this.grainResolution = _grainResolution;
+        this.type = _type;
+        
+        this.numGrains = _img.pixels.length * this.grainResolution;
+        
+        this.numCrystals = 0;
+        this.minCrystals = _minCrystals;
+        this.maxCrystals = _maxCrystals;
+        this.grainSize = _grainSize;
+                
+        this.grains = [];
+        for (let i=0; i<this.numGrains; i++) {
+            let x = random(_img.width);
+            let normX = x / _img.width;
+            
+            let y = random(_img.height);
+            let normY = y / _img.height;
+            
+            let loc = x + y * _img.width;
+            let c = _img.pixels[loc];
+            let energy = 0;
+
+            switch (this.type) {
+                case "r":
+                    energy = red(c) / 255.0;
+                    break;
+                case "g":
+                    energy = green(c) / 255.0;
+                    break;
+                case "b":
+                    energy = blue(c) / 255.0;
+                    break;
+                default:
+                    energy = brightness(c) / 255.0;
+                    break;
+            }
+
+            grains.push(new Grain(normX, normY, energy, this.grainSize, this.minCrystals, this.maxCrystals));
+        
+            this.numCrystals += grains[i].crystals.length;
+        }
+        
     }
     
-  }
-  
 }
