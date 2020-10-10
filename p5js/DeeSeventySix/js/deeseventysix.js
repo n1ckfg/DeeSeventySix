@@ -2,7 +2,7 @@
 
 let darkroom;  // Darkroom
 let toggleImg;  // bool
-let isColor = false;
+const isColor = false;
 let img;  // PImage
 
 function preload() {

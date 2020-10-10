@@ -15,14 +15,15 @@ class Darkroom {
     constructor(_img, _isColor) {  // PImage, bool
         this.isColor = _isColor;  // bool
         this.grainResolution = 3;
-        this.frameScale = 2;
-        this.alpha = 3;
+        this.frameScale = 3;
+        this.alpha = 1;
         this.grainSize = 0.001;
         this.crystalThreshold = 10;
         this.minCrystals = 15; //15;
         this.maxCrystals = 25; //25;
         this.renderSteps = 1000;
-        this.strokeColor = color(255);
+        this.strokeVal = 1;
+        this.strokeColor = color(this.strokeVal);
         this.solarizeThreshold = 60.0;
         
         this.img = _img;
@@ -39,12 +40,12 @@ class Darkroom {
             this.emulsions.push(new Emulsion(this.img, "bw", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
         }
         
-        this.frame = this.createGraphics(this.img.width * this.frameScale, this.img.height * this.frameScale);
-        this.frame.beginDraw();
-        this.frame.blendMode(NORMAL);
+        this.frame = createGraphics(this.img.width * this.frameScale, this.img.height * this.frameScale);
+
+        this.frame.blendMode(BLEND);
         this.frame.background(0);
         this.frame.blendMode(ADD);
-        this.frame.endDraw();
+
         
         console.log("width: " + this.frame.width + "     height: " + this.frame.height);
         for (let i=0; i<this.emulsions.length; i++) {
@@ -69,23 +70,21 @@ class Darkroom {
         }
     }
 
-    develop() {
-        this.frame.beginDraw();
-        
+    develop() {       
         for (let i=0; i<this.renderSteps; i++) {
             for (let h=0; h<this.emulsions.length; h++) {
                 switch(this.emulsions[h].type) {
                     case "r":
-                        this.strokeColor = createColor(255, 0, 0);
+                        this.strokeColor = color(this.strokeVal, 0, 0);
                         break;
                     case "g":
-                        this.strokeColor = createColor(0, 255, 0);
+                        this.strokeColor = color(0, this.strokeVal, 0);
                         break;
                     case "b":
-                        this.strokeColor = createColor(0, 0, 255);
+                        this.strokeColor = color(0, 0, this.strokeVal);
                         break;
                     default:
-                        this.strokeColor = createColor(255);
+                        this.strokeColor = color(this.strokeVal);
                         break;
                 }
                 let grain = parseInt(random(this.emulsions[h].grains.length));
@@ -94,20 +93,18 @@ class Darkroom {
                         if (this.emulsions[h].grains[grain].crystals[j].exposed) {
                             let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
                             let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
-                            this.frame.strokeWeight(frameScale*2);
-                            this.frame.stroke(strokeColor, alpha/2);
+                            this.frame.strokeWeight(this.frameScale*2);
+                            this.frame.stroke(this.strokeColor, this.alpha/2);
                             this.frame.point(x, y);
-                            this.frame.strokeWeight(frameScale);
-                            this.frame.stroke(strokeColor, alpha);
+                            this.frame.strokeWeight(this.frameScale);
+                            this.frame.stroke(this.strokeColor, this.alpha);
                             this.frame.point(x, y);
                         }
                     }
                     this.emulsions[h].grains[grain].developed = true;
                 }
             }
-        }
-        
-        this.frame.endDraw();
+        }        
     }
     
     drawSource() {

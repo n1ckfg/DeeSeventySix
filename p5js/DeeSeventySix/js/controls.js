@@ -1,14 +1,12 @@
 "use strict";
 
 function keyPressed() {
-    /*
     switch(key) {
         case 's':
-            saveFrame("test.png");
+            save("test.png");
             break;
         case ' ':
             toggleImg = !toggleImg;
             break;
     } 
-    */
 }

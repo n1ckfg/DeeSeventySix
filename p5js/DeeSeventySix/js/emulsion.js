@@ -3,10 +3,13 @@
 class Emulsion {
             
     constructor(_img, _type, _grainResolution, _minCrystals, _maxCrystals, _grainSize) {  // PImage, string, int, int, int, float
+        this.img = _img;
+        this.img.loadPixels();
+
         this.grainResolution = _grainResolution;
         this.type = _type;
         
-        this.numGrains = _img.pixels.length * this.grainResolution;
+        this.numGrains = this.img.pixels.length * this.grainResolution;
         
         this.numCrystals = 0;
         this.minCrystals = _minCrystals;
@@ -15,14 +18,15 @@ class Emulsion {
                 
         this.grains = [];
         for (let i=0; i<this.numGrains; i++) {
-            let x = random(_img.width);
-            let normX = x / _img.width;
+            let x = random(this.img.width);
+            let normX = x / this.img.width;
             
-            let y = random(_img.height);
-            let normY = y / _img.height;
+            let y = random(this.img.height);
+            let normY = y / this.img.height;
             
-            let loc = x + y * _img.width;
-            let c = _img.pixels[loc];
+            let loc = 4 * (parseInt(x) + parseInt(y) * this.img.width);
+
+            let c = color(this.img.pixels[loc], this.img.pixels[loc+1], this.img.pixels[loc+2]);
             let energy = 0;
 
             switch (this.type) {
@@ -40,9 +44,9 @@ class Emulsion {
                     break;
             }
 
-            grains.push(new Grain(normX, normY, energy, this.grainSize, this.minCrystals, this.maxCrystals));
+            this.grains.push(new Grain(normX, normY, energy, this.grainSize, this.minCrystals, this.maxCrystals));
         
-            this.numCrystals += grains[i].crystals.length;
+            this.numCrystals += this.grains[i].crystals.length;
         }
         
     }
