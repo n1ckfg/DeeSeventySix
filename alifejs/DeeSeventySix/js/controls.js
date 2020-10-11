@@ -1,7 +1,11 @@
 "use strict";
 
-function keyPressed() {
-    switch(key) {
+window.addEventListener("keydown", function(event) {
+	//  
+});
+
+window.addEventListener("keyup", function(event) {
+    switch(getKeyCode(event)) {
         case 's':
             save("test.png");
             break;
@@ -9,4 +13,4 @@ function keyPressed() {
             toggleImg = !toggleImg;
             break;
     } 
-}
+});
