@@ -22,7 +22,7 @@ class Darkroom {
         this.minCrystals = 15; //15;
         this.maxCrystals = 25; //25;
         this.renderSteps = 1000;
-        this.strokeVal = 1.0;
+        this.strokeVal = 1;
         this.strokeColor = this.strokeVal;
         this.solarizeThreshold = 60.0;
         
