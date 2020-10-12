@@ -1,27 +1,29 @@
 "use strict";
 
 let darkroom;  // Darkroom
-let toggleImg;  // bool
-const isColor = false;
-let ready = false;
+let toggleImg = false;  
+let isColor = false;
+let ready;  // bool
 let img;
 let url  = "./images/blockbuster_small.jpg";
 
 function reset() {
+    ready = false;
     img = new field2D(256, 256);
     img.loadImage(url, function() { 
         darkroom = new Darkroom(img, isColor);
-        
-        toggleImg = false;
-        
+                
         darkroom.expose();
+        console.log("* exposed *");
 
         ready = true;
     });
 }
 
 function update(dt) {    
-    if (ready) darkroom.develop();
+    if (ready) {
+        darkroom.develop();
+    }
 }
 
 function draw() {
@@ -30,6 +32,6 @@ function draw() {
             darkroom.drawSource();
         } else {
             darkroom.draw();
-        }    
-    }
+        }   
+    } 
 }

@@ -23,21 +23,21 @@ class Emulsion {
             let y = random(this.img.height);
             let normY = y / this.img.height;
             
-            let c = this.img.get(x, y);
+            let c = this.img.cell(x, y);
             let energy = 0;
 
             switch (this.type) {
                 case "r":
-                    energy = c[0] / 255.0;
+                    energy = c[0];
                     break;
                 case "g":
-                    energy = c[1] / 255.0;
+                    energy = c[1];
                     break;
                 case "b":
-                    energy = c[2] / 255.0;
+                    energy = c[2];
                     break;
                 default:
-                    energy = ((c[0] + c[1] + c[2]) / 3.0) / 255.0;
+                    energy = (c[0] + c[1] + c[2]) / 3.0;
                     break;
             }
 
