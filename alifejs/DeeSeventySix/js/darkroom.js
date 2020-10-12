@@ -22,7 +22,7 @@ class Darkroom {
         this.minCrystals = 15; //15;
         this.maxCrystals = 25; //25;
         this.renderSteps = 1000;
-        this.strokeVal = 1;
+        this.strokeVal = 1.0;
         this.strokeColor = this.strokeVal;
         this.solarizeThreshold = 60.0;
         
@@ -85,14 +85,9 @@ class Darkroom {
                 if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
                     for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
                         if (this.emulsions[h].grains[grain].crystals[j].exposed) {
-                            let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
-                            let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
-                            this.frame.strokeWeight(this.frameScale*2);
-                            this.frame.stroke(this.strokeColor, this.alpha/2);
-                            this.frame.point(x, y);
-                            this.frame.strokeWeight(this.frameScale);
-                            this.frame.stroke(this.strokeColor, this.alpha);
-                            this.frame.point(x, y);
+                            let x = this.emulsions[h].grains[grain].crystals[j].x; // * this.frame.width;
+                            let y = this.emulsions[h].grains[grain].crystals[j].y; // * this.frame.height;
+                            this.frame.set(this.strokeColor, x, y);
                         }
                     }
                     this.emulsions[h].grains[grain].developed = true;
