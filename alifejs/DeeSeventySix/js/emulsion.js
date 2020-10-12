@@ -8,7 +8,7 @@ class Emulsion {
         this.grainResolution = _grainResolution;
         this.type = _type;
         
-        this.numGrains = this.img.pixels.length * this.grainResolution;
+        this.numGrains = this.img.length * this.grainResolution;
         
         this.numCrystals = 0;
         this.minCrystals = _minCrystals;
@@ -23,9 +23,7 @@ class Emulsion {
             let y = random(this.img.height);
             let normY = y / this.img.height;
             
-            let loc = parseInt(x) + parseInt(y) * this.img.width;
-
-            let c = this.img.pixels[loc];
+            let c = this.img.get(x, y);
             let energy = 0;
 
             switch (this.type) {

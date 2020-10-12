@@ -32,6 +32,4 @@ function draw() {
             darkroom.draw();
         }    
     }
-
-    img.draw();
 }

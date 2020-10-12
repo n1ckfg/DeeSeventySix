@@ -102,11 +102,11 @@ class Darkroom {
     }
     
     drawSource() {
-        image(this.img, 0, 0, width, height);
+        this.img.draw();
     }
     
     draw() {
-        image(this.frame, 0, 0, width, height);
+        this.frame.draw();
     }
     
 }
