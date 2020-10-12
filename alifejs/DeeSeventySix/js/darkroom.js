@@ -23,11 +23,10 @@ class Darkroom {
         this.maxCrystals = 25; //25;
         this.renderSteps = 1000;
         this.strokeVal = 1;
-        this.strokeColor = color(this.strokeVal);
+        this.strokeColor = this.strokeVal;
         this.solarizeThreshold = 60.0;
         
         this.img = _img;
-        this.img.loadPixels();
         
         this.exposureCounter = 0;
         this.emulsions = [];
@@ -40,12 +39,7 @@ class Darkroom {
             this.emulsions.push(new Emulsion(this.img, "bw", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
         }
         
-        this.frame = createGraphics(this.img.width * this.frameScale, this.img.height * this.frameScale);
-
-        this.frame.blendMode(BLEND);
-        this.frame.background(0);
-        this.frame.blendMode(ADD);
-
+        this.frame = new field2D(this.img.width * this.frameScale, this.img.height * this.frameScale);
         
         console.log("width: " + this.frame.width + "     height: " + this.frame.height);
         for (let i=0; i<this.emulsions.length; i++) {
@@ -75,16 +69,16 @@ class Darkroom {
             for (let h=0; h<this.emulsions.length; h++) {
                 switch(this.emulsions[h].type) {
                     case "r":
-                        this.strokeColor = color(this.strokeVal, 0, 0);
+                        this.strokeColor = [this.strokeVal, 0, 0];
                         break;
                     case "g":
-                        this.strokeColor = color(0, this.strokeVal, 0);
+                        this.strokeColor = [0, this.strokeVal, 0];
                         break;
                     case "b":
-                        this.strokeColor = color(0, 0, this.strokeVal);
+                        this.strokeColor = [0, 0, this.strokeVal];
                         break;
                     default:
-                        this.strokeColor = color(this.strokeVal);
+                        this.strokeColor = this.strokeVal;
                         break;
                 }
                 let grain = parseInt(random(this.emulsions[h].grains.length));
