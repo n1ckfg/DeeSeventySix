@@ -87,7 +87,7 @@ class Darkroom {
                         if (this.emulsions[h].grains[grain].crystals[j].exposed) {
                             let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
                             let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
-                            this.frame.set(this.strokeColor, x, y);
+                            this.frame.set(this.frame.get(x, y) + this.strokeVal, x, y);
                         }
                     }
                     this.emulsions[h].grains[grain].developed = true;
