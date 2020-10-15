@@ -15,18 +15,18 @@ class Darkroom {
     constructor(_img, _isColor) {  // PImage, bool
         this.isColor = _isColor;  
         this.grainResolution = 3; // 3
-        this.frameScale = 2;
-        this.grainSize =  0.001;  //  0.001
+        this.frameScale = 3;
+        this.grainSize =  0.01;  //  0.001
         this.crystalThreshold = 10;
         this.minCrystals = 15; // 15;
         this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
         this.solarizeThreshold = 254/255;
 
-        this.channelScaleR = 0.1;
-        this.channelScaleG = 0.7;
-        this.channelScaleB = 0.7;
-        this.channelScaleBW = 0.5;
+        this.channelScaleR = 1;
+        this.channelScaleG = 1;
+        this.channelScaleB = 1;
+        this.channelScaleBW = 1;
 
         this.sourceField = _img;
         
@@ -83,19 +83,19 @@ class Darkroom {
 
                             if(this.emulsions[h].type === "bw") {
                                 col = this.destField.get(destX, destY);
-                                col = clamp(col + this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleBW, 0, 1);
+                                col += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleBW;
                             } else {
                                 col = this.destField.cell(destX, destY);
 
                                 switch(this.emulsions[h].type) {
                                     case "r":
-                                        col[0] = clamp(col[0] + this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleR, 0, 1);
+                                        col[0] += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleR;
                                         break;
                                     case "g":
-                                        col[1] = clamp(col[0] + this.sourceField.sample(sourceX, sourceY, 1) * this.channelScaleG, 0, 1);
+                                        col[1] += this.sourceField.sample(sourceX, sourceY, 1) * this.channelScaleG;
                                         break;
                                     case "b":
-                                        col[2] = clamp(col[0] + this.sourceField.sample(sourceX, sourceY, 2) * this.channelScaleB, 0, 1);
+                                        col[2] += this.sourceField.sample(sourceX, sourceY, 2) * this.channelScaleB;
                                         break;
                                 }
                             }
@@ -108,7 +108,7 @@ class Darkroom {
             }
         }    
 
-        this.destField.diffuse(this.destField, 0.005, 2);
+        this.destField.diffuse(this.destField, 0.01, 2);
     }
     
     diffuse() {

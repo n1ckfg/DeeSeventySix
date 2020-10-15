@@ -8,7 +8,7 @@ let img;
 let url  = "./images/blockbuster_mid.jpg";
 let startTime;
 
-const developTime = 8;
+const developTime = 12;
 
 let dropZone;
 dropZone = document.getElementsByTagName("body")[0];
