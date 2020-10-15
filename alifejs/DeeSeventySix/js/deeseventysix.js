@@ -4,9 +4,9 @@ let darkroom;  // Darkroom
 let toggleImg = false;  
 let ready;  // bool
 let img;
-let url  = "./images/blockbuster_mid.jpg";
+const url  = "./images/blockbuster_mid.jpg";
 let startTime;
-let developTime = 8;
+const developTime = 8;
 
 function reset() {
     ready = false;
@@ -17,16 +17,19 @@ function reset() {
         darkroom.expose();
         console.log("* exposed *");
 
+        setupAgents();
+        startTime = util.millis();
+
         ready = true;
     });
-
-    startTime = util.millis();
 }
 
 function update(dt) {    
     if (ready) {
         if (util.millis() < startTime + (developTime * 1000)) {
             darkroom.develop();
+        } else {
+            updateAgents(dt);
         }
     }
 }
@@ -37,6 +40,7 @@ function draw() {
             darkroom.drawSource();
         } else {
             darkroom.draw();
+            if (debugAgents) drawAgents();
         }   
     } 
 }
