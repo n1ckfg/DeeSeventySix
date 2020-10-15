@@ -16,7 +16,8 @@ window.addEventListener("keyup", function(event) {
             break;
         case 'c':
         	isColor = !isColor;
-        	console.log("use color: " + isColor);
+        	reset();
+            console.log("use color: " + isColor);
         	break;
         case 'd':
             darkroom.diffuse();

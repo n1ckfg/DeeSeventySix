@@ -5,8 +5,9 @@ let toggleImg = false;
 let isColor = false;
 let ready;  // bool
 let img;
-const url  = "./images/blockbuster_mid.jpg";
+let url  = "./images/blockbuster_mid.jpg";
 let startTime;
+
 const developTime = 8;
 
 let dropZone;
@@ -74,7 +75,11 @@ function onDrop(e) {
             //telidon.push(new TelidonDraw([e2.target.result], sW, sW));
             //recording = true;
             //preview.style.backgroundImage = null;
+            url = e2.target.result;
+            console.log("Drag drop");
+            reset();
         }
-        reader.readAsText(file, 'UTF-8');
+        //reader.readAsText(file, 'UTF-8');
+        reader.readAsDataURL(file);
     }      
 }
