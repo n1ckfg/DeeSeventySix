@@ -66,9 +66,9 @@ function onDragOver(e) {
 function onDrop(e) {
     e.stopPropagation();
     e.preventDefault();
-    var files = e.dataTransfer.files; // Array of all files
-    for (var i=0, file; file=files[i]; i++) {
-        var reader = new FileReader();
+    let files = e.dataTransfer.files; // Array of all files
+    for (let i=0, file; file=files[i]; i++) {
+        let reader = new FileReader();
         reader.onload = function(e2) {
             //if (telidon.length >= maxLength) telidon.splice(0,1);
             //telidon.push(new TelidonDraw([e2.target.result], sW, sW));
