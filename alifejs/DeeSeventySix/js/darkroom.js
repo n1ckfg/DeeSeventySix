@@ -13,7 +13,7 @@ class Darkroom {
     */
 
     constructor(_img) {  // PImage
-        this.isColor = true;  
+        this.isColor = false;  
         this.grainResolution = 3; // 3
         this.frameScale = 2;
         this.grainSize =  0.001;  //  0.001
