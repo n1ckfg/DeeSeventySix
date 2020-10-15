@@ -12,8 +12,8 @@ class Darkroom {
     3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
     */
 
-    constructor(_img) {  // PImage
-        this.isColor = false;  
+    constructor(_img, _isColor) {  // PImage, bool
+        this.isColor = _isColor;  
         this.grainResolution = 3; // 3
         this.frameScale = 2;
         this.grainSize =  0.001;  //  0.001
