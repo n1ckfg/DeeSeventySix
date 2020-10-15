@@ -9,6 +9,8 @@ let startTime;
 const developTime = 8;
 
 function reset() {
+    window.location.reload();
+
     ready = false;
     img = new field2D(256, 256);
     img.loadImage(url, function() { 
