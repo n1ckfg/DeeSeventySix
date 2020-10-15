@@ -24,13 +24,18 @@ function reset() {
     });
 }
 
-function update(dt) {    
-    if (ready) {
-        if (util.millis() < startTime + (developTime * 1000)) {
-            darkroom.develop();
-        } else {
-            updateAgents(dt);
+function update(dt) {  
+    try {  
+        if (ready) {
+            if (util.millis() < startTime + (developTime * 1000)) {
+                darkroom.develop();
+            } else {
+                updateAgents(dt);
+            }
         }
+    } catch (e) {
+        console.log(e);
+        window.location.reload();
     }
 }
 
