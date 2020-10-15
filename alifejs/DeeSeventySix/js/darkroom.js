@@ -12,36 +12,34 @@ class Darkroom {
     3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
     */
 
-    constructor(_img, _isColor) {  // PImage, bool
-        this.isColor = _isColor;  // bool
-        this.grainResolution = 3;
+    constructor(_img) {  // PImage
+        this.isColor = false;  
+        this.grainResolution = 3; // 3
         this.frameScale = 3;
-        this.alpha = 1;
-        this.grainSize = 0.001;
+        this.grainSize = 0.001;  //  0.001
         this.crystalThreshold = 10;
-        this.minCrystals = 15; //15;
-        this.maxCrystals = 25; //25;
+        this.minCrystals = 15; // 15;
+        this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
-        this.strokeVal = 1;
-        this.strokeColor = this.strokeVal;
-        this.solarizeThreshold = 60.0;
-        
-        this.img = _img;
+        this.solarizeThreshold = 254.0 / 255.0;
+        this.strokeVal = 0.5;
+
+        this.sourceField = _img;
         
         this.exposureCounter = 0;
         this.emulsions = [];
         
-        if (isColor) {
-            this.emulsions.push(new Emulsion(this.img, "r", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
-            this.emulsions.push(new Emulsion(this.img, "b", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
-            this.emulsions.push(new Emulsion(this.img, "g", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+        if (this.isColor) {
+            this.emulsions.push(new Emulsion(this.sourceField, "r", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+            this.emulsions.push(new Emulsion(this.sourceField, "b", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+            this.emulsions.push(new Emulsion(this.sourceField, "g", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
         } else {
-            this.emulsions.push(new Emulsion(this.img, "bw", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
+            this.emulsions.push(new Emulsion(this.sourceField, "bw", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
         }
         
-        this.frame = new field2D(this.img.width * this.frameScale, this.img.height * this.frameScale);
+        this.destField = new field2D(this.sourceField.width * this.frameScale, this.sourceField.height * this.frameScale);
         
-        console.log("width: " + this.frame.width + "     height: " + this.frame.height);
+        console.log("width: " + this.destField.width + "     height: " + this.destField.height);
         for (let i=0; i<this.emulsions.length; i++) {
             console.log("channel " + (i+1) + " -- grains: " + this.emulsions[i].numGrains + "     crystals: " + this.emulsions[i].numCrystals);    
         }
@@ -67,41 +65,47 @@ class Darkroom {
     develop() {       
         for (let i=0; i<this.renderSteps; i++) {
             for (let h=0; h<this.emulsions.length; h++) {
-                switch(this.emulsions[h].type) {
-                    case "r":
-                        this.strokeColor = [this.strokeVal, 0, 0];
-                        break;
-                    case "g":
-                        this.strokeColor = [0, this.strokeVal, 0];
-                        break;
-                    case "b":
-                        this.strokeColor = [0, 0, this.strokeVal];
-                        break;
-                    default:
-                        this.strokeColor = this.strokeVal;
-                        break;
-                }
                 let grain = parseInt(random(this.emulsions[h].grains.length));
                 if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
                     for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
                         if (this.emulsions[h].grains[grain].crystals[j].exposed) {
-                            let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
-                            let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
-                            this.frame.set(this.frame.get(x, y) + this.strokeVal, x, y);
+                            let sourceX = this.emulsions[h].grains[grain].crystals[j].x * this.sourceField.width;
+                            let sourceY = this.emulsions[h].grains[grain].crystals[j].y * this.sourceField.height;
+
+                            let destX = this.emulsions[h].grains[grain].crystals[j].x * this.destField.width;
+                            let destY = this.emulsions[h].grains[grain].crystals[j].y * this.destField.height;
+
+                            let col = [0,0,0,1];
+                            switch(this.emulsions[h].type) {
+                                case "r":
+                                    col[0] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
+                                    break;
+                                case "g":
+                                    col[1] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
+                                    break;
+                                case "b":
+                                    col[2] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
+                                    break;
+                                default:
+                                    col = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
+                                    break;
+                            }
+                            this.destField.set(col, destX, destY);
+
                         }
                     }
                     this.emulsions[h].grains[grain].developed = true;
                 }
             }
-        }        
+        }     
     }
     
     drawSource() {
-        this.img.draw();
+        this.sourceField.draw();
     }
     
     draw() {
-        this.frame.draw();
+        this.destField.draw();
     }
     
 }

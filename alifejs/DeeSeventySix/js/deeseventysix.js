@@ -2,16 +2,15 @@
 
 let darkroom;  // Darkroom
 let toggleImg = false;  
-let isColor = false;
 let ready;  // bool
 let img;
-let url  = "./images/blockbuster_small.jpg";
+let url  = "./images/blockbuster_mid.jpg";
 
 function reset() {
     ready = false;
     img = new field2D(256, 256);
     img.loadImage(url, function() { 
-        darkroom = new Darkroom(img, isColor);
+        darkroom = new Darkroom(img);
                 
         darkroom.expose();
         console.log("* exposed *");

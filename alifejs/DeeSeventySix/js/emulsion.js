@@ -25,21 +25,21 @@ class Emulsion {
             
             let loc = 4 * (parseInt(x) + parseInt(y) * this.img.width);
 
-            let c = [this.img.array[loc], this.img.array[loc+1], this.img.array[loc+2]];
+            let c = [this.img.array[loc], this.img.array[loc+1], this.img.array[loc+2], 1];
             let energy = 0;
 
             switch (this.type) {
                 case "r":
-                    energy = c[0];
+                    energy = 1 - c[0];
                     break;
                 case "g":
-                    energy = c[1];
+                    energy = 1 - c[1];
                     break;
                 case "b":
-                    energy = c[2];
+                    energy = 1 - c[2];
                     break;
                 default:
-                    energy = (c[0] + c[1] + c[2]) / 3.0;
+                    energy = 1 - c[0];
                     break;
             }
 
