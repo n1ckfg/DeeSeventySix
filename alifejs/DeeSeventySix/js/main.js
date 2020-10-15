@@ -1,5 +1,7 @@
 "use strict";
 
+window.location.reload();
+
 let darkroom;  // Darkroom
 let toggleImg = false;  
 let ready;  // bool
@@ -9,8 +11,6 @@ let startTime;
 const developTime = 8;
 
 function reset() {
-    window.location.reload();
-
     ready = false;
     img = new field2D(256, 256);
     img.loadImage(url, function() { 
