@@ -1,7 +1,5 @@
 "use strict";
 
-window.location.reload();
-
 let darkroom;  // Darkroom
 let toggleImg = false;  
 let ready;  // bool
