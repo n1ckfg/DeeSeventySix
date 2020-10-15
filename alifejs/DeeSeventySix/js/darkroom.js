@@ -15,14 +15,13 @@ class Darkroom {
     constructor(_img) {  // PImage
         this.isColor = false;  
         this.grainResolution = 3; // 3
-        this.frameScale = 3;
-        this.grainSize = 0.001;  //  0.001
+        this.frameScale = 2;
+        this.grainSize =  0.001;  //  0.001
         this.crystalThreshold = 10;
         this.minCrystals = 15; // 15;
         this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
-        this.solarizeThreshold = 254.0 / 255.0;
-        this.strokeVal = 0.5;
+        this.solarizeThreshold = 254/255;
 
         this.sourceField = _img;
         
@@ -75,31 +74,46 @@ class Darkroom {
                             let destX = this.emulsions[h].grains[grain].crystals[j].x * this.destField.width;
                             let destY = this.emulsions[h].grains[grain].crystals[j].y * this.destField.height;
 
-                            let col = [0,0,0,1];
-                            switch(this.emulsions[h].type) {
-                                case "r":
-                                    col[0] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
-                                    break;
-                                case "g":
-                                    col[1] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
-                                    break;
-                                case "b":
-                                    col[2] = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
-                                    break;
-                                default:
-                                    col = this.sourceField.sample(sourceX, sourceY) * this.strokeVal;
-                                    break;
-                            }
-                            this.destField.set(col, destX, destY);
+                            let col;
 
+                            if(this.emulsions[h].type === "bw") {
+                                col = this.destField.get(destX, destY);
+                                col += this.sourceField.sample(sourceX, sourceY, 0);
+                            } else {
+                                col = this.destField.cell(destX, destY);
+
+                                switch(this.emulsions[h].type) {
+                                    case "r":
+                                        col[0] += this.sourceField.sample(sourceX, sourceY, 0);
+                                        break;
+                                    case "g":
+                                        col[1] += this.sourceField.sample(sourceX, sourceY, 1);
+                                        break;
+                                    case "b":
+                                        col[2] += this.sourceField.sample(sourceX, sourceY, 2);
+                                        break;
+                                }
+                            }
+
+                            this.destField.set(col, destX, destY);
                         }
                     }
                     this.emulsions[h].grains[grain].developed = true;
                 }
             }
-        }     
+        }    
+
+        this.destField.diffuse(this.destField, 0.005, 2);
     }
     
+    diffuse() {
+        this.destField.diffuse(this.destField, 0.1, 10); // sourcefield, diffusion, passes
+    }
+
+    normalize() {
+        this.destField.normalize();       
+    }
+
     drawSource() {
         this.sourceField.draw();
     }

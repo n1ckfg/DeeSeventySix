@@ -5,6 +5,8 @@ let toggleImg = false;
 let ready;  // bool
 let img;
 let url  = "./images/blockbuster_mid.jpg";
+let startTime;
+let developTime = 8;
 
 function reset() {
     ready = false;
@@ -17,11 +19,15 @@ function reset() {
 
         ready = true;
     });
+
+    startTime = util.millis();
 }
 
 function update(dt) {    
     if (ready) {
-        darkroom.develop();
+        if (util.millis() < startTime + (developTime * 1000)) {
+            darkroom.develop();
+        }
     }
 }
 

@@ -18,5 +18,13 @@ window.addEventListener("keyup", function(event) {
         	isColor = !isColor;
         	console.log("use color: " + isColor);
         	break;
+        case 'd':
+            darkroom.diffuse();
+            console.log("Applying diffusion");
+            break;
+        case 'n':
+            darkroom.normalize();
+            console.log("Applying normalization");
+            break;
     } 
 });
