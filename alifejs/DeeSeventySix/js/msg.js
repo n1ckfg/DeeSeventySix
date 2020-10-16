@@ -1,8 +1,15 @@
 "use strict";
 
 window.onload = function() {
-  document.addEventListener('keydown', function() {
-  	let msg = document.getElementById("msg");
-    document.getElementById('msg').style.display = 'none';
-  });
+    let msg = document.getElementById("msg");
+
+    if (!util.checkForMouse()) {
+    	msg.innerHTML = "Pull down to refresh";
+    } else {
+    	msg.innerHTML = "Press enter or drag-drop";
+    }
+
+    document.addEventListener('keydown', function() {    	
+        document.getElementById('msg').style.display = 'none';
+    });
 }

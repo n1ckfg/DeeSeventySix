@@ -48,6 +48,10 @@ class Util {
         return c;
     }
 
+    checkForMouse() {
+    	return !window.matchMedia("(any-pointer:coarse)").matches;
+    }
+
 }
 
 const util = new Util();
