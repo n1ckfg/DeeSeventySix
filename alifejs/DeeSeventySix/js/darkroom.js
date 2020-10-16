@@ -16,17 +16,14 @@ class Darkroom {
         this.isColor = _isColor;  
         this.grainResolution = 3; // 3
         this.frameScale = 3;
-        this.grainSize =  0.01;  //  0.001
+        this.grainSize =  1;  //  0.001
         this.crystalThreshold = 10;
         this.minCrystals = 15; // 15;
         this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
-        this.solarizeThreshold = 254/255;
+        this.solarizeThreshold = 1;
 
-        this.channelScaleR = 1;
-        this.channelScaleG = 1;
-        this.channelScaleB = 1;
-        this.channelScaleBW = 1;
+        this.channelScale = 1;
 
         this.sourceField = _img;
         
@@ -83,19 +80,19 @@ class Darkroom {
 
                             if(this.emulsions[h].type === "bw") {
                                 col = this.destField.get(destX, destY);
-                                col += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleBW;
+                                col += this.sourceField.sample(sourceX, sourceY) * this.channelScale;
                             } else {
                                 col = this.destField.cell(destX, destY);
 
                                 switch(this.emulsions[h].type) {
                                     case "r":
-                                        col[0] += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScaleR;
+                                        col[0] += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScale;
                                         break;
                                     case "g":
-                                        col[1] += this.sourceField.sample(sourceX, sourceY, 1) * this.channelScaleG;
+                                        col[1] += this.sourceField.sample(sourceX, sourceY, 1) * this.channelScale;
                                         break;
                                     case "b":
-                                        col[2] += this.sourceField.sample(sourceX, sourceY, 2) * this.channelScaleB;
+                                        col[2] += this.sourceField.sample(sourceX, sourceY, 2) * this.channelScale;
                                         break;
                                 }
                             }
@@ -108,7 +105,7 @@ class Darkroom {
             }
         }    
 
-        this.destField.diffuse(this.destField, 0.01, 2);
+        this.destField.diffuse(this.destField, 0.05, 2);
     }
     
     diffuse() {

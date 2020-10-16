@@ -1,7 +1,9 @@
 "use strict";
 
+let msg;
+
 window.onload = function() {
-    let msg = document.getElementById("msg");
+    msg = document.getElementById("msg");
 
     if (!util.checkForMouse()) {
     	msg.innerHTML = "Pull down to refresh";
@@ -10,6 +12,6 @@ window.onload = function() {
     }
 
     document.addEventListener('keydown', function() {    	
-        document.getElementById('msg').style.display = 'none';
+        msg.style.display = 'none';
     });
 }

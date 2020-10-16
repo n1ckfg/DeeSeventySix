@@ -77,6 +77,7 @@ function onDrop(e) {
             //preview.style.backgroundImage = null;
             url = e2.target.result;
             console.log("Drag drop");
+			msg.style.display = 'none';
             reset();
         }
         //reader.readAsText(file, 'UTF-8');
