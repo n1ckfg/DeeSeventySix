@@ -2,159 +2,35 @@
 <html>
 
     <head>
-        <title>Flocking Example</title>
+        <title>Flocking Example 002</title>
         <script type="text/javascript" src="../../js/libraries/alife.js" defer></script>
+        <script type="text/javascript" src="./flock.js" defer></script>
         <script type="text/javascript">
         	"use strict";
 
-            let agents = [];
-
-            let nearby_range = 1/20;
-            let field_of_view = Math.PI/3;
-
-            let max_speed = 1/5;
-            let max_acceleration = 0.2;
-            let inertia = 0.99;
-
-            let randomwalk_factor = 0.0006 * 60;
-            let cohesion_factor = 0.2 ;
-            let alignment_factor = 1.5 ;
-            let avoidance_factor = 0.5 ;
-            let collision_distance_factor = 10000;
-
-            let traces_decay = 0.95;
-            let traces;
-
-            let isShowingAgents = true;
+		    let traces;
+		    let flock;
 
             function reset() {
 				traces = new field2D(512);
-
-                agents = [];
-                for (let i = 0; i < 150; i++) {
-	                agents.push({
-	                    pos: new vec2(random(), random()),
-	                    vel: vec2.random(1/400),
-	                    acc: new vec2(0, 0),
-	                    size: 1/100 + random()/80
-	                });
-                }
+				flock = new Flock(100);
             }
 
             function update(dt) {
-                traces.scale(traces_decay);
+                traces.scale(flock.traces_decay);
 
-                for (let a of agents) {
-	                let force = new vec2();
-	                a.neighbours = [];
-
-	                // who is near?;
-	                for (let b of agents) {
-	                    // don't test against self;
-	                    if (a == b) continue;
-	                    // get relative vector to neighbour;
-	                    let rel = b.pos.clone().sub(a.pos);
-	                    rel.relativewrap();
-	                    rel.rotate(-a.vel.angle());
-	                    // are a and b near?;
-	                    let d = a.pos.distance(b.pos) - a.size/2 - b.size/2;
-	                    if (d <= 0) {
-	                    	// we're touching!;
-	                    	a.neighbours.push(b);
-	                    } else if (d < nearby_range) {
-	                    	if (Math.abs(rel.angle()) < field_of_view) {
-	                        	// we're visible!;
-	                        	a.neighbours.push(b);
-	                    	}
-	                    }
-	                }
-
-	                // add a cohesive force ("centering"):;
-	                if (a.neighbours.length > 0) {
-	                    // compute average position of neighbours:;
-	                    let cohesion = new vec2();
-	                    for (let b of a.neighbours) {
-	                    	cohesion.add(b.pos) ;
-	                    }
-	                    cohesion.scale(1/a.neighbours.length);
-	                    // make it relative to me:;
-	                    cohesion.sub(a.pos);
-	                    // add this as an *attractive* force;
-	                    force.add(cohesion.scale(cohesion_factor));
-	                }
-
-	                // add an alignment force ("copy"):;
-	                for (let b of a.neighbours) {
-	                    // compute average *velocity* of neighbours:;
-	                    let alignment = new vec2();
-	                    for (let b of a.neighbours) {
-	                    	alignment.add(b.vel);
-	                    }
-	                    alignment.scale(1/a.neighbours.length);
-	                    
-	                    // this is our "desired velocity";
-	                    // subtract our current velocity to get the desired acceleration:;
-	                    alignment.sub(a.vel);
-	                    // scale this down to limit the effect / spread over time:;
-	                    force.add(alignment.scale(alignment_factor));
-	                }
-
-	                // add an avoidance force:;
-	                for (let b of a.neighbours) {
-	                    // add a 'force' that points away from neigbour;
-	                    let rel = a.pos.clone().sub(b.pos).relativewrap();
-	                    let d = Math.max(rel.len() - a.size/2 - b.size/2, 0);
-	                    // compute collision avoidance according to distance:;
-	                    rel.len( 1/(1+d*collision_distance_factor) );
-	                    // average over neighbours:;
-	                    rel.scale(1/a.neighbours.length);
-
-	                    force.add(rel.scale(avoidance_factor));
-	                }
-
-	                // add some random walk:;
-	                force.add(vec2.random(randomwalk_factor));
-
-	                // integrate force to velocity to position:;
-	                a.acc.scale(inertia);
-	                a.acc.add(force);
-	                a.acc.limit(max_acceleration);
-	                a.vel.add(a.acc.clone().scale(dt));
-	                a.vel.limit(max_speed);
-	                a.pos.add(a.vel.clone().scale(dt)).wrap(1);
-	                traces.deposit(1, a.pos);
-	            }
+                flock.update(dt);
 	        }
 
             function draw(ctx) {
                 traces.smooth = true;
                 traces.draw();
 
-                for (let a of agents) {
-	            	draw2D.push().translate(a.pos).rotate(a.vel).scale(a.size);
-	                draw2D.hsl(0.5);
-	                
-	                //draw2D.circle();
-	                if (isShowingAgents) draw2D.triangle(1, 0.5);
-	                draw2D.pop();
-	                
-	                // draw links:;
-	                for (let b of a.neighbours) {
-	                    //if (a.pos.distance(b.pos) < 0.5) draw2D.line(a.pos, b.pos);
-	                }
-                }
-            }
-
-            function mouse(kind, pt, id) {
-                // let x = pt[0], y = pt[1];
-                // let [x, y] = pt;
-                // nearby_range = x/2;
-                // avoidance_factor = 100*Math.pow(y, 2);    ;
-                // //console.log(avoidance_factor);
+                flock.draw(ctx);
             }
             
             function key(kind, key) {
-                if (kind == "down") isShowingAgents = !isShowingAgents; ;
+                if (kind == "down") flock.isShowingAgents = !flock.isShowingAgents; ;
             }
         </script>
     </head>
