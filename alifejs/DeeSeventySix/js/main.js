@@ -28,7 +28,7 @@ function reset() {
         console.log("* exposed *");
 
         ants = new Ants(10000);
-        flock = new Flock(100);
+        flock = new Flock(200);
 
         startTime = util.millis();
 
