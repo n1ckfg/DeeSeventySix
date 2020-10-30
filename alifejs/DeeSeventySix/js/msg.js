@@ -8,7 +8,7 @@ window.onload = function() {
     msg = document.getElementById("msg");
 
     if (!util.checkForMouse()) {
-    	msg.innerHTML = "pull down for demo<br>more options on desktop";
+    	msg.innerHTML = "reload for demo<br>more options on desktop";
     } else {
     	msg.innerHTML = "press enter for demo<br>or drag-drop an image" + controlinfo;
     }
