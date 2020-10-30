@@ -15,6 +15,9 @@ dropZone = document.getElementsByTagName("body")[0];
 dropZone.addEventListener('dragover', onDragOver);
 dropZone.addEventListener('drop', onDrop);
 
+let flock, ants;
+let debug = false;
+
 function reset() {
     ready = false;
     img = new field2D(256, 256);
@@ -24,7 +27,8 @@ function reset() {
         darkroom.expose();
         console.log("* exposed *");
 
-        setupAgents();
+        ants = new Ants(10000);
+
         startTime = util.millis();
 
         ready = true;
@@ -37,7 +41,7 @@ function update(dt) {
             if (util.millis() < startTime + (developTime * 1000)) {
                 darkroom.develop();
             } else {
-                updateAgents(dt);
+                ants.update(dt);
             }
         }
     } catch (e) {
@@ -46,13 +50,15 @@ function update(dt) {
     }
 }
 
-function draw() {
+function draw(ctx) {
     if (ready) {
         if (toggleImg) {
             darkroom.drawSource();
         } else {
             darkroom.draw();
-            if (debugAgents) drawAgents();
+            if (debug) {
+                ants.draw();
+            }
         }   
     } 
 }
