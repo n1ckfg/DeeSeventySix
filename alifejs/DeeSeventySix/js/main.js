@@ -20,7 +20,7 @@ let debug = false;
 
 function reset() {
     ready = false;
-    img = new field2D(256, 256);
+    img = new field2D(256);
     img.loadImage(url, function() { 
         darkroom = new Darkroom(img, isColor);
                 
