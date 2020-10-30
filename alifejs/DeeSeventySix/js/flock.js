@@ -123,7 +123,7 @@ class Flock {
             a.vel.limit(this.max_speed);
             a.pos.add(a.vel.clone().scale(dt)).wrap(1);
             
-            traces.deposit(1, a.pos);
+            darkroom.destField.deposit(1, a.pos);
         }
 	}
 

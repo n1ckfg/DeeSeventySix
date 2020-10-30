@@ -28,6 +28,7 @@ function reset() {
         console.log("* exposed *");
 
         ants = new Ants(10000);
+        flock = new Flock(100);
 
         startTime = util.millis();
 
@@ -42,6 +43,7 @@ function update(dt) {
                 darkroom.develop();
             } else {
                 ants.update(dt);
+                flock.update(dt);
             }
         }
     } catch (e) {
@@ -56,6 +58,7 @@ function draw(ctx) {
             darkroom.drawSource();
         } else {
             darkroom.draw();
+            flock.draw();
             if (debug) {
                 ants.draw();
             }
