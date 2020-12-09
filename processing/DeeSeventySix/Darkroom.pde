@@ -25,7 +25,7 @@ class Darkroom {
   Darkroom(String _url, boolean _isColor) {
     isColor = _isColor;
     grainResolution = 3;
-    frameScale = 2;
+    frameScale = 1;
     alpha = 3;
     grainSize = 0.001;
     crystalThreshold = 10;
