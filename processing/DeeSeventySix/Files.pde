@@ -29,6 +29,7 @@ void fileLoop() {
     //prepGraphics();
   } else {
     saveGraphics(darkroom.frame, true); //exit
+    exit();
   }
 }
 
