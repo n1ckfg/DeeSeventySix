@@ -6,8 +6,8 @@ Darkroom::Darkroom() {
 
 Darkroom::Darkroom(string _url, bool _isColor) {
     isColor = _isColor;
-    grainResolution = 1;
-    frameScale = 2;
+    grainResolution = 3;
+    frameScale = 1;
     alpha = 3;
     grainSize = 0.001;
     crystalThreshold = 10;

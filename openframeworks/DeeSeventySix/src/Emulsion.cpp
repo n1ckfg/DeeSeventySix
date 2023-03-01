@@ -12,14 +12,15 @@ Emulsion::Emulsion(ofImage& _img, string _emulsionType, int _grainResolution, in
     grainSize = _grainSize;
       
     for (int i=0; i<numGrains; i++) {
-        float x = ofRandom(_img.getWidth());
-        float normX = x / (float) _img.getWidth();
+		float w = (float) _img.getWidth();
+        float x = ofRandom(w);
+        float normX = x / w;
 
-        float y = ofRandom(_img.getHeight());
-        float normY = y / (float) _img.getHeight();
+		float h = (float) _img.getHeight();
+        float y = ofRandom(h);
+        float normY = y / h;
 
-        int loc = (int) x + (int) y * _img.getWidth();
-        ofColor c = _img.getPixels()[loc];
+        ofColor c = _img.getColor(x, y);
         float energy = 0;
         if (emulsionType == "r") {
             energy = c.r / 255.0;

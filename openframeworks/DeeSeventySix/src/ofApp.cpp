@@ -6,7 +6,7 @@ void ofApp::setup() {
     isColor = (bool) settings.getValue("settings:color_film", 0);
     toggleImg = false;
     darkroom = Darkroom(imageUrl, isColor);
-    ofSetWindowShape(darkroom.img.getWidth(), darkroom.img.getHeight());
+    ofSetWindowShape(darkroom.frame.getWidth(), darkroom.frame.getHeight());
     darkroom.expose();
     
     ofSetVerticalSync(false);
@@ -23,6 +23,8 @@ void ofApp::draw() {
     } else {
       darkroom.draw();
     }
+
+	ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
 void ofApp::keyPressed(int key) {
