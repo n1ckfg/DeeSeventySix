@@ -1,0 +1,205 @@
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Pix2P5</title>
+	<style>
+        body {
+            font-size: 18px;
+        }
+
+        #container {
+            width: 514px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .ioblock {
+            width: 256px;
+            height: 256px;
+            position: absolute;
+            border: 1px solid black;
+            top: 0px;
+        }
+
+        #input {
+            left: 0px;
+        }
+
+        #output {   
+            left: 256px;
+            pointer-events: none;
+        }
+
+        .btn {
+            position: absolute;
+            top: 265px;
+        }
+
+        #clearBtn {
+            left: 0px;
+        }
+
+        #transferBtn {
+            left: 60px;
+        }
+
+        #status {
+            position: absolute;
+            left: 0px;
+            top: 294px;
+            border: 1px solid black;
+            width: 512px;
+            height: 1.5em;
+        }
+    </style>
+    <script src="./js/libraries/p5.min.js"></script>
+    <script src="./js/libraries/ml5.min.js"></script>
+</head>
+
+<body>
+	<div id="container">
+		<div class="ioblock" id="input"></div>
+        <div class="ioblock" id="output"></div>
+		<button class="btn" id="clearBtn">Clear</button><br>
+		<!--<button class="btn" id="transferBtn">Transfer</button>-->
+        <div style="position: absolute; top: 326px; z-index: 1;"><a href="webcam.html">webcam</a></div>
+        <div id="status"></div>
+	</div>
+
+    <script>
+        "use strict";
+
+        // Copyright (c) 2019 ml5
+        //
+        // This software is released under the MIT License.
+        // https://opensource.org/licenses/MIT
+
+        /* ===
+        ml5 Example
+        Pix2pix Edges2Pikachu example with p5.js using callback functions
+        This uses a pre-trained model on Pikachu images
+        For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/models/pix2pix
+        === */
+
+        // The pre-trained Edges2Pikachu model is trained on 256x256 images
+        // So the input images can only be 256x256 or 512x512, or multiple of 256
+        const SIZE = 256;
+        let inputImg, inputCanvas, outputContainer, canvasElement, statusMsg, pix2pix, clearBtn, transferBtn, modelReady = false, isTransfering = false;
+
+        function setup() {
+            // Create a canvas
+            inputCanvas = createCanvas(SIZE, SIZE);
+            inputCanvas.parent("input");
+
+            // Display initial input image
+            inputImg = loadImage("./images/input.png", drawImage);
+
+            // Selcect output div container
+            outputContainer = select("#output");
+            statusMsg = select("#status");
+            statusMsg.html("Model loading...");
+
+            // Select "transfer" button html element
+            transferBtn = select("#transferBtn");
+
+            // Select "clear" button html element
+            clearBtn = select("#clearBtn");
+            // Attach a mousePressed event to the "clear" button
+            clearBtn.mousePressed(function() {
+                clearCanvas();
+            });
+
+            pixelDensity(1);
+
+            // Create a pix2pix method with a pre-trained model
+            pix2pix = ml5.pix2pix("./models/nick_draw.pict", modelLoaded);
+        }
+
+        // Draw on the canvas when mouse is pressed
+        function draw() {
+            if (mouseIsPressed) {
+                let avgX = (mouseX + pmouseX) / 2;
+                let avgY = (mouseY + pmouseY) / 2;
+
+                stroke(0,22);
+                strokeWeight(8);
+                line(mouseX, mouseY, avgX, avgY);
+                strokeWeight(5.5);
+                line(avgX, avgY, pmouseX, pmouseY);
+
+                stroke(0);
+                strokeWeight(2);
+                line(mouseX, mouseY, avgX, avgY);
+                strokeWeight(1.5);
+                line(avgX, avgY, pmouseX, pmouseY);
+            }
+        }
+
+        // Whenever mouse is released, transfer the current image if the model is loaded and it"s not in the process of another transformation
+        function mouseReleased() {
+            if (modelReady && !isTransfering) {
+                transfer()
+            }
+        }
+
+        // A function to be called when the models have loaded
+        function modelLoaded() {
+            // Show "Model Loaded!" message
+            statusMsg.html("Model loaded!");
+
+            // Set modelReady to true
+            modelReady = true;
+
+            // Call transfer function after the model is loaded
+            transfer();
+
+            // Attach a mousePressed event to the transfer button
+            transferBtn.mousePressed(function() {
+                transfer();
+            });
+        }
+
+        // Draw the input image to the canvas
+        function drawImage() {
+            image(inputImg, 0, 0);
+        }
+
+        // Clear the canvas
+        function clearCanvas() {
+            background(255);
+        }
+
+        function transfer() {
+            // Set isTransfering to true
+            isTransfering = true;
+
+            // Update status message
+            statusMsg.html("Applying Style Transfer...");
+
+            // Select canvas DOM element
+            canvasElement = select("canvas").elt;
+
+            // Apply pix2pix transformation
+            pix2pix.transfer(canvasElement, function(err, result) {
+                if (err) {
+                    console.log(err);
+                }
+
+                if (result && result.src) {
+                    // Set isTransfering back to false
+                    isTransfering = false;
+                    // Clear output container
+                    outputContainer.html("");
+                    // Create an image based result
+                    createImg(result.src).parent("output");
+                    // Show "Done!" message
+                    statusMsg.html("Done!");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
