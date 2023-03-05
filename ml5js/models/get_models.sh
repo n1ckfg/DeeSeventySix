@@ -10,5 +10,5 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd $DIR
 
-wget https://fox-gieg.com/patches/github/n1ckfg/vox2vox-pytorch/model/generator_100.pth
-wget https://fox-gieg.com/patches/github/n1ckfg/vox2vox-pytorch/model/discriminator_100.pth
+wget https://fox-gieg.com/patches/github/n1ckfg/DeeSeventySix/ml5js/models/d76_mix.pict
+wget https://fox-gieg.com/patches/github/n1ckfg/DeeSeventySix/ml5js/models/nick_draw.pict
