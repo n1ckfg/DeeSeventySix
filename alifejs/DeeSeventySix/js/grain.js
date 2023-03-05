@@ -15,7 +15,7 @@ class Grain {
         this.crystals = [];
         
         for (let i=0; i<this.numCrystals; i++) {
-            this.crystals.push(new Crystal(this.x + random(this.grainSize) - random(this.grainSize), this.y + random(this.grainSize) - random(this.grainSize)));
+            this.crystals.push(new Crystal(this.x + random(-this.grainSize, this.grainSize), this.y + random(-this.grainSize, this.grainSize)));
         }
     }
     

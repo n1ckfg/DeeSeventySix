@@ -423,6 +423,17 @@ field2D.prototype.clear = function() {
 	}
 	return this;
 };
+
+field2D.prototype.fill = function() {
+  const array = this.array;
+  for (let i = 0, l = array.length; i < l; i += 4) {
+    array[i] = 1;
+    array[i + 1] = 1;
+    array[i + 2] = 1;
+    array[i + 3] = 1;
+  }
+  return this;
+};
   
 field2D.prototype.get = function(x, y) {
 	/*if (typeof x !== "number" || typeof y !== "number") {
