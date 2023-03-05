@@ -2,16 +2,15 @@
 
 let darkroom;  // Darkroom
 let toggleImg;  // bool
-const isColor = false;
 let img;  // PImage
 
 function preload() {
-    img = loadImage("./images/blockbuster_small.jpg");
+    img = loadImage("./images/blockbuster_mid.jpg");
 }
 
 function setup() {
-    darkroom = new Darkroom(img, isColor);
-    createCanvas(darkroom.frame.width, darkroom.frame.height);
+    darkroom = new Darkroom(img);
+    createCanvas(darkroom.img.width, darkroom.img.height);
     
     toggleImg = false;
     

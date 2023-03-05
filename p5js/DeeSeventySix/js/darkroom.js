@@ -12,18 +12,16 @@ class Darkroom {
     3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
     */
 
-    constructor(_img, _isColor) {  // PImage, bool
-        this.isColor = _isColor;  // bool
-        this.grainResolution = 3;
-        this.frameScale = 3;
-        this.alpha = 1;
-        this.grainSize = 0.001;
-        this.crystalThreshold = 10;
+    constructor(_img) {  // PImage, bool
+        this.isColor = true;  // bool
+        this.grainResolution = 1;
+        this.frameScale = 1;
+        this.grainSize = 0.01;
+        this.crystalThreshold = 4;
         this.minCrystals = 15; //15;
         this.maxCrystals = 25; //25;
-        this.renderSteps = 1000;
-        this.strokeVal = 1;
-        this.strokeColor = color(this.strokeVal);
+        this.renderSteps = 100;
+        this.strokeColor;
         this.solarizeThreshold = 60.0;
         
         this.img = _img;
@@ -32,7 +30,7 @@ class Darkroom {
         this.exposureCounter = 0;
         this.emulsions = [];
         
-        if (isColor) {
+        if (this.isColor) {
             this.emulsions.push(new Emulsion(this.img, "r", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
             this.emulsions.push(new Emulsion(this.img, "b", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
             this.emulsions.push(new Emulsion(this.img, "g", this.grainResolution, this.minCrystals, this.maxCrystals, this.grainSize));
@@ -75,29 +73,27 @@ class Darkroom {
             for (let h=0; h<this.emulsions.length; h++) {
                 switch(this.emulsions[h].type) {
                     case "r":
-                        this.strokeColor = color(this.strokeVal, 0, 0);
+                        this.strokeColor = color(255, 0, 0);
                         break;
                     case "g":
-                        this.strokeColor = color(0, this.strokeVal, 0);
+                        this.strokeColor = color(0, 255, 0);
                         break;
                     case "b":
-                        this.strokeColor = color(0, 0, this.strokeVal);
+                        this.strokeColor = color(0, 0, 255);
                         break;
                     default:
-                        this.strokeColor = color(this.strokeVal);
+                        this.strokeColor = color(255);
                         break;
                 }
                 let grain = parseInt(random(this.emulsions[h].grains.length));
+                this.frame.strokeWeight(1);
+                this.frame.stroke(this.strokeColor);
+                
                 if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
                     for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
                         if (this.emulsions[h].grains[grain].crystals[j].exposed) {
                             let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
                             let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
-                            this.frame.strokeWeight(this.frameScale*2);
-                            this.frame.stroke(this.strokeColor, this.alpha/2);
-                            this.frame.point(x, y);
-                            this.frame.strokeWeight(this.frameScale);
-                            this.frame.stroke(this.strokeColor, this.alpha);
                             this.frame.point(x, y);
                         }
                     }
