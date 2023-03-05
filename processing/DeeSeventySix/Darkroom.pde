@@ -1,3 +1,5 @@
+
+
 class Darkroom {
 
   /* 
@@ -15,7 +17,7 @@ class Darkroom {
   boolean isColor;
   
   Emulsion[] emulsions;
-  int grainResolution, frameScale, exposureCounter, renderSteps, alpha;  
+  int grainResolution, frameScale, exposureCounter, renderSteps;  
   color strokeColor;
   float grainSize, solarizeThreshold;
 
@@ -24,16 +26,14 @@ class Darkroom {
 
   Darkroom(String _url, boolean _isColor) {
     isColor = _isColor;
-    grainResolution = 3;
-    frameScale = 1;
-    alpha = 3;
-    grainSize = 0.001;
-    crystalThreshold = 10;
+    grainResolution = 2;
+    frameScale = 2;
+    grainSize = 0.01;
+    crystalThreshold = 4;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
-    strokeColor = color(255);
-    solarizeThreshold = 60;
+    solarizeThreshold = 20;
     
     url = _url;
     img = loadImage(url);
@@ -51,11 +51,10 @@ class Darkroom {
       emulsions[0] = new Emulsion(img, "bw", grainResolution, minCrystals, maxCrystals, grainSize);
     }
     
-    frame = createGraphics(img.width * frameScale, img.height * frameScale, P2D);
+    frame = createGraphics(img.width * frameScale, img.height * frameScale); // P2D has trouble with multiply blend mode here?
     frame.beginDraw();
-    frame.blendMode(NORMAL);
-    frame.background(0);
-    frame.blendMode(ADD);
+    frame.background(255);
+    frame.blendMode(MULTIPLY);
     frame.endDraw();
     
     println("width: " + frame.width + "   height: " + frame.height);
@@ -88,29 +87,27 @@ class Darkroom {
       for (int h=0; h<emulsions.length; h++) {
         switch(emulsions[h].type) {
           case "r":
-            strokeColor = color(255, 0, 0);
+            strokeColor = color(0, 255, 255);
             break;
           case "g":
-            strokeColor = color(0, 255, 0);
+            strokeColor = color(255, 0, 255);
             break;
           case "b":
-            strokeColor = color(0, 0, 255);
+            strokeColor = color(255, 255, 0);
             break;
           default:
-            strokeColor = color(255);
+            strokeColor = color(0);
             break;
         }
         int grain = (int) random(emulsions[h].grains.length);
+        frame.strokeWeight(frameScale);
+        frame.stroke(strokeColor);
+        
         if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
           for (int j=0; j<emulsions[h].grains[grain].crystals.length; j++) {
-            if (emulsions[h].grains[grain].crystals[j].exposed) {
+            if (!emulsions[h].grains[grain].crystals[j].exposed) {
               float x = emulsions[h].grains[grain].crystals[j].x * frame.width;
               float y = emulsions[h].grains[grain].crystals[j].y * frame.height;
-              frame.strokeWeight(frameScale*2);
-              frame.stroke(strokeColor, alpha/2);
-              frame.point(x, y);
-              frame.strokeWeight(frameScale);
-              frame.stroke(strokeColor, alpha);
               frame.point(x, y);
             }
           }

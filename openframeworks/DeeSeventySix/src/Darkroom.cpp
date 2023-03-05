@@ -6,16 +6,14 @@ Darkroom::Darkroom() {
 
 Darkroom::Darkroom(string _url, bool _isColor) {
     isColor = _isColor;
-    grainResolution = 3;
-    frameScale = 1;
-    alpha = 3;
-    grainSize = 0.001;
-    crystalThreshold = 10;
+    grainResolution = 2;
+    frameScale = 2;
+    grainSize = 0.01;
+    crystalThreshold = 4;
     minCrystals = 15; //15;
     maxCrystals = 25; //25;
     renderSteps = 1000;
-    strokeColor = ofColor(255);
-    solarizeThreshold = 60;
+    solarizeThreshold = 90;
 
     url = _url;
     img.load(url);
@@ -32,9 +30,8 @@ Darkroom::Darkroom(string _url, bool _isColor) {
 
     frame.allocate(img.getWidth() * frameScale, img.getHeight() * frameScale, GL_RGB);
     frame.begin();
-    ofBackground(0);
-    ofBlendMode(ADD);
-    frame.end();
+    ofBackground(255);
+	frame.end();
 
     cout << "width: " << frame.getWidth() << "   height: " << frame.getHeight() << endl;
     for (int i=0; i<emulsions.size(); i++) {
@@ -61,28 +58,27 @@ void Darkroom::expose() {
 
 void Darkroom::develop() {
     frame.begin();
+	ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
 
     for (int i=0; i<renderSteps; i++) {
         for (int h=0; h<emulsions.size(); h++) {
             if (emulsions[h].emulsionType == "r") {
-                strokeColor = ofColor(255, 0, 0);
+                strokeColor = ofColor(0, 255, 255);
             } else if (emulsions[h].emulsionType == "g") {
-                strokeColor = ofColor(0, 255, 0);
+                strokeColor = ofColor(255, 0, 255);
             } else if (emulsions[h].emulsionType == "b") {
-                strokeColor = ofColor(0, 0, 255);
+                strokeColor = ofColor(255, 255, 0);
             } else {
-                strokeColor = ofColor(255);
+                strokeColor = ofColor(0);
             }
-            
             int grain = (int) ofRandom(emulsions[h].grains.size());
-            if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
+			ofSetColor(strokeColor);
+
+			if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
                 for (int j=0; j<emulsions[h].grains[grain].crystals.size(); j++) {
-                    if (emulsions[h].grains[grain].crystals[j].exposed) {
+                    if (!emulsions[h].grains[grain].crystals[j].exposed) {
                         float x = emulsions[h].grains[grain].crystals[j].x * frame.getWidth();
                         float y = emulsions[h].grains[grain].crystals[j].y * frame.getHeight();
-                        ofSetColor(strokeColor, alpha/2);
-                        ofDrawCircle(x, y, frameScale*2);
-                        ofSetColor(strokeColor, alpha);
                         ofDrawCircle(x, y, frameScale);
                     }
                 }
@@ -96,9 +92,9 @@ void Darkroom::develop() {
 }
 
 void Darkroom::drawSource() {
-    img.draw(0, 0);
+    img.draw(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 void Darkroom::draw() {
-    frame.draw(0, 0);
+    frame.draw(0, 0, ofGetWidth(), ofGetHeight());
 }

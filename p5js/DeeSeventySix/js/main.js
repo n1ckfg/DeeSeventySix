@@ -9,7 +9,7 @@ function preload() {
 }
 
 function setup() {
-    darkroom = new Darkroom(img);
+    darkroom = new Darkroom(img, true);
     createCanvas(darkroom.img.width, darkroom.img.height);
     
     toggleImg = false;

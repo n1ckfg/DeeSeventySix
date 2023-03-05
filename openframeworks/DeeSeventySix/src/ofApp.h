@@ -16,5 +16,7 @@ class ofApp : public ofBaseApp {
         bool toggleImg, isColor;
         ofxXmlSettings settings;
         string imageUrl;
-
+		int grainResolution = 2;
+		int frameScale = 2;
+		float grainSize = 0.01;
 };

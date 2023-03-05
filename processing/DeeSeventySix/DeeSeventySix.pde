@@ -3,6 +3,8 @@ boolean toggleImg;
 Settings settings;
 boolean isColor = false;
 String imageUrl;
+int grainResolution, frameScale;  
+float grainSize;
 int repsCounter = 0;
 int repsCounterMax = 2000;
 
@@ -39,7 +41,11 @@ void init() {
   repsCounter = 0;
   
   darkroom = new Darkroom(imageUrl, isColor);
-  surface.setSize(darkroom.frame.width, darkroom.frame.height);
+  surface.setSize(darkroom.img.width, darkroom.img.height);
+  
+  darkroom.grainResolution = grainResolution;
+  darkroom.frameScale = frameScale;  
+  darkroom.grainSize = grainSize;
   
   toggleImg = false;
   

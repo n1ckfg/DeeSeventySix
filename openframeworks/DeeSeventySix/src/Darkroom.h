@@ -28,7 +28,7 @@ class Darkroom {
         bool isColor;
 
         vector<Emulsion> emulsions;
-        int grainResolution, frameScale, exposureCounter, renderSteps, alpha;
+        int grainResolution, frameScale, exposureCounter, renderSteps;
         ofColor strokeColor;
         float grainSize, solarizeThreshold;
 

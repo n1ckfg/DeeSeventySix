@@ -1,0 +1,14 @@
+Image Url
+blockbuster_mid.jpg
+
+Color Film
+true
+
+Grain Resolution
+2
+
+Frame Scale
+2
+
+Grain Size
+0.01

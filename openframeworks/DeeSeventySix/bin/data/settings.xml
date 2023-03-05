@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <settings>
-    <image_url>blockbuster_mid.jpg</image_url>
-    <color_film>0</color_film>
+    <image_url>blockbuster.jpg</image_url>
+    <color_film>1</color_film>
+	<grainResolution>2</grainResolution>;
+	<frameScale>2</frameScale>;
+	<grainSize>0.01</grainSize>;
 </settings>

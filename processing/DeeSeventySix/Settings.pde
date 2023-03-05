@@ -14,6 +14,9 @@ class Settings {
       for (int i=0;i<data.length;i++) {
         if (data[i].equals("Image Url")) imageUrl = readString(i);
         if (data[i].equals("Color Film")) isColor = readBoolean(i);
+        if (data[i].equals("Grain Resolution")) grainResolution = readInt(i);
+        if (data[i].equals("Frame Scale")) frameScale = readInt(i);
+        if (data[i].equals("Grain Size")) grainSize = readFloat(i);
       }
     } 
     catch(Exception e) {

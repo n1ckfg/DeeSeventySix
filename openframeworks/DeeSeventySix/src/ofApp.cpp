@@ -1,12 +1,21 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
-    settings.loadFile("settings.xml");
-    imageUrl = settings.getValue("settings:image_url", "blockbuster_mid.jpg");
+    settings.loadFile("settings.xml");    
+	imageUrl = settings.getValue("settings:image_url", "blockbuster_mid.jpg");
     isColor = (bool) settings.getValue("settings:color_film", 0);
+	grainResolution = settings.getValue("settings:grain_resolution", 2);
+	frameScale = settings.getValue("settings:frame_scale", 2);
+	grainSize = settings.getValue("settings:grain_size", 0.01);
+
     toggleImg = false;
     darkroom = Darkroom(imageUrl, isColor);
-    ofSetWindowShape(darkroom.frame.getWidth(), darkroom.frame.getHeight());
+
+	darkroom.grainResolution = grainResolution;
+	darkroom.frameScale = frameScale;
+	darkroom.grainSize = grainSize;
+
+    ofSetWindowShape(darkroom.img.getWidth(), darkroom.img.getHeight());
     darkroom.expose();
     
     ofSetVerticalSync(false);

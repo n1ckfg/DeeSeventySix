@@ -12,17 +12,17 @@ class Darkroom {
     3. Once past a threshold number of crystals exposed, all crystals in the grain are exposed.
     */
 
-    constructor(_img) {  // PImage, bool
-        this.isColor = true;  // bool
+    constructor(_img, _isColor) {  // PImage, bool
+        this.isColor = _isColor;  // bool
         this.grainResolution = 1;
         this.frameScale = 1;
         this.grainSize = 0.01;
         this.crystalThreshold = 4;
         this.minCrystals = 15; //15;
         this.maxCrystals = 25; //25;
-        this.renderSteps = 100;
+        this.renderSteps = 1000;
         this.strokeColor;
-        this.solarizeThreshold = 60.0;
+        this.solarizeThreshold = 90.0;
         
         this.img = _img;
         this.img.loadPixels();
@@ -41,8 +41,8 @@ class Darkroom {
         this.frame = createGraphics(this.img.width * this.frameScale, this.img.height * this.frameScale);
 
         this.frame.blendMode(BLEND);
-        this.frame.background(0);
-        this.frame.blendMode(ADD);
+        this.frame.background(255);
+        this.frame.blendMode(MULTIPLY);
 
         
         console.log("width: " + this.frame.width + "     height: " + this.frame.height);
@@ -73,16 +73,16 @@ class Darkroom {
             for (let h=0; h<this.emulsions.length; h++) {
                 switch(this.emulsions[h].type) {
                     case "r":
-                        this.strokeColor = color(255, 0, 0);
+                        this.strokeColor = color(0, 255, 255);
                         break;
                     case "g":
-                        this.strokeColor = color(0, 255, 0);
+                        this.strokeColor = color(255, 0, 255);
                         break;
                     case "b":
-                        this.strokeColor = color(0, 0, 255);
+                        this.strokeColor = color(255, 255, 0);
                         break;
                     default:
-                        this.strokeColor = color(255);
+                        this.strokeColor = color(0);
                         break;
                 }
                 let grain = parseInt(random(this.emulsions[h].grains.length));
@@ -91,7 +91,7 @@ class Darkroom {
                 
                 if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
                     for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
-                        if (this.emulsions[h].grains[grain].crystals[j].exposed) {
+                        if (!this.emulsions[h].grains[grain].crystals[j].exposed) {
                             let x = this.emulsions[h].grains[grain].crystals[j].x * this.frame.width;
                             let y = this.emulsions[h].grains[grain].crystals[j].y * this.frame.height;
                             this.frame.point(x, y);
