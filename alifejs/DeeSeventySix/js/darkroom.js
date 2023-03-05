@@ -15,15 +15,15 @@ class Darkroom {
     constructor(_img, _isColor) {  // PImage, bool
         this.isColor = _isColor;  
         this.grainResolution = 3; // 3
-        this.frameScale = 3;
-        this.grainSize =  1;  //  0.001
-        this.crystalThreshold = 10;
+        this.frameScale = 1;
+        this.grainSize = 1;  //  0.001
+        this.crystalThreshold = 4;
         this.minCrystals = 15; // 15;
         this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
-        this.solarizeThreshold = 2;
+        this.solarizeThreshold = 4;
 
-        this.channelScale = 2;
+        this.channelScale = 1;
 
         this.sourceField = _img;
         
@@ -39,7 +39,7 @@ class Darkroom {
         }
         
         this.destField = new field2D(this.sourceField.width * this.frameScale, this.sourceField.height * this.frameScale);
-        this.fill(this.destField, 0);
+        this.fill(this.destField, 1);
         
         console.log("width: " + this.destField.width + "     height: " + this.destField.height);
         for (let i=0; i<this.emulsions.length; i++) {
@@ -77,9 +77,9 @@ class Darkroom {
         for (let i=0; i<this.renderSteps; i++) {
             for (let h=0; h<this.emulsions.length; h++) {
                 let grain = parseInt(random(this.emulsions[h].grains.length));
-                if (this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
+                if (!this.emulsions[h].grains[grain].exposed && !this.emulsions[h].grains[grain].developed) {
                     for (let j=0; j<this.emulsions[h].grains[grain].crystals.length; j++) {
-                        if (this.emulsions[h].grains[grain].crystals[j].exposed) {
+                        if (!this.emulsions[h].grains[grain].crystals[j].exposed) {
                             let sourceX = this.emulsions[h].grains[grain].crystals[j].x * this.sourceField.width;
                             let sourceY = this.emulsions[h].grains[grain].crystals[j].y * this.sourceField.height;
 
@@ -90,19 +90,19 @@ class Darkroom {
 
                             if(this.emulsions[h].type === "bw") {
                                 col = this.destField.get(destX, destY);
-                                col += this.sourceField.sample(sourceX, sourceY) * this.channelScale;
+                                col *= (1 - this.sourceField.sample(sourceX, sourceY)) * this.channelScale;
                             } else {
                                 col = this.destField.cell(destX, destY);
 
                                 switch(this.emulsions[h].type) {
                                     case "r":
-                                        col[0] += this.sourceField.sample(sourceX, sourceY, 0) * this.channelScale;
+                                        col[0] *= (1 - this.sourceField.sample(sourceX, sourceY, 0)) * this.channelScale;
                                         break;
                                     case "g":
-                                        col[1] += this.sourceField.sample(sourceX, sourceY, 1) * this.channelScale;
+                                        col[1] *= (1 - this.sourceField.sample(sourceX, sourceY, 1)) * this.channelScale;
                                         break;
                                     case "b":
-                                        col[2] += this.sourceField.sample(sourceX, sourceY, 2) * this.channelScale;
+                                        col[2] *= (1 - this.sourceField.sample(sourceX, sourceY, 2)) * this.channelScale;
                                         break;
                                 }
                             }
@@ -115,7 +115,8 @@ class Darkroom {
             }
         }    
 
-        this.destField.diffuse(this.destField, 0.05, 2);
+        //this.destField.diffuse(this.destField, 0.05, 2);
+        this.destField.diffuse(this.destField, 0.01, 1.001);
     }
     
     diffuse() {
