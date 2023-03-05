@@ -100,6 +100,8 @@ class Darkroom {
             break;
         }
         int grain = (int) random(emulsions[h].grains.length);
+        
+        frame.beginShape(LINES);
         frame.strokeWeight(frameScale);
         frame.stroke(strokeColor);
         
@@ -108,11 +110,13 @@ class Darkroom {
             if (!emulsions[h].grains[grain].crystals[j].exposed) {
               float x = emulsions[h].grains[grain].crystals[j].x * frame.width;
               float y = emulsions[h].grains[grain].crystals[j].y * frame.height;
-              frame.point(x, y);
+              frame.vertex(x, y);
             }
           }
           emulsions[h].grains[grain].developed = true;
         }
+        frame.endShape();
+        
       }
     }
     

@@ -18,7 +18,7 @@ class Grain {
     crystals = new Crystal[numCrystals];
     
     for (int i=0; i<crystals.length; i++) {
-      crystals[i] = new Crystal(x + random(grainSize) - random(grainSize), y + random(grainSize) - random(grainSize));
+      crystals[i] = new Crystal(x + random(-grainSize, grainSize), y + random(-grainSize, grainSize));
     }
   }
   

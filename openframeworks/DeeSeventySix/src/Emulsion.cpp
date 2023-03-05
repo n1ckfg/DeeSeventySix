@@ -32,7 +32,7 @@ Emulsion::Emulsion(ofImage& _img, string _emulsionType, int _grainResolution, in
             energy = c.getBrightness() / 255.0;
         }
 
-        grains.push_back(Grain(normX, normY, energy, grainSize, minCrystals, maxCrystals));
+		grains.push_back(Grain(normX, normY, energy, grainSize, minCrystals, maxCrystals));
 
         numCrystals += grains[i].crystals.size();
     }
