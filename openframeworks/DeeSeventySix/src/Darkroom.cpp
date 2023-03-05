@@ -14,7 +14,6 @@ Darkroom::Darkroom(string _url, bool _isColor) {
     maxCrystals = 25; //25;
     renderSteps = 1000;
     solarizeThreshold = 90;
-	alpha = 235;
 
     url = _url;
     img.load(url);
@@ -73,28 +72,19 @@ void Darkroom::develop() {
                 strokeColor = ofColor(0);
             }
             int grain = (int) ofRandom(emulsions[h].grains.size());
-			ofSetColor(strokeColor, alpha);
-			ofSetLineWidth(frameScale);
-			ofNoFill();
-			ofBeginShape();
-			//glPointSize(frameScale);
-			//glBegin(GL_POINTS);
+			ofSetColor(strokeColor);
 
 			if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
                 for (int j=0; j<emulsions[h].grains[grain].crystals.size(); j++) {
                     if (!emulsions[h].grains[grain].crystals[j].exposed) {
                         float x = emulsions[h].grains[grain].crystals[j].x * frame.getWidth();
                         float y = emulsions[h].grains[grain].crystals[j].y * frame.getHeight();
-						ofVertex(x, y);
-						//glVertex2f(x, y); 
+						ofDrawCircle(x, y, frameScale);
                     }
                 }
                 
                 emulsions[h].grains[grain].developed = true;
             }
-
-			ofEndShape();
-			//glEnd();
         }
     }
 

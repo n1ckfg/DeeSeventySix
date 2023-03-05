@@ -101,10 +101,10 @@ class Darkroom {
         }
         int grain = (int) random(emulsions[h].grains.length);
         
-        frame.beginShape(LINES);
         frame.strokeWeight(frameScale);
         frame.stroke(strokeColor);
-        
+
+        frame.beginShape(POINTS);
         if (emulsions[h].grains[grain].exposed && !emulsions[h].grains[grain].developed) {
           for (int j=0; j<emulsions[h].grains[grain].crystals.length; j++) {
             if (!emulsions[h].grains[grain].crystals[j].exposed) {
