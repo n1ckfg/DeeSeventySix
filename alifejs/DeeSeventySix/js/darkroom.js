@@ -39,10 +39,20 @@ class Darkroom {
         }
         
         this.destField = new field2D(this.sourceField.width * this.frameScale, this.sourceField.height * this.frameScale);
+        this.fill(this.destField, 0);
         
         console.log("width: " + this.destField.width + "     height: " + this.destField.height);
         for (let i=0; i<this.emulsions.length; i++) {
             console.log("channel " + (i+1) + " -- grains: " + this.emulsions[i].numGrains + "     crystals: " + this.emulsions[i].numCrystals);    
+        }
+    }
+
+    fill(target, val) {
+        for (let i=0; i<target.array.length; i+=4) {
+            target.array[i] = val;
+            target.array[i+1] = val;
+            target.array[i+2] = val;
+            target.array[i+3] = 1;
         }
     }
 
