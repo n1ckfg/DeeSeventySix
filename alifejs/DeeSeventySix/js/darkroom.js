@@ -21,7 +21,7 @@ class Darkroom {
         this.minCrystals = 15; // 15;
         this.maxCrystals = 25; // 25;
         this.renderSteps = 1000;
-        this.solarizeThreshold = 4;
+        this.solarizeThreshold = 2;
 
         this.channelScale = 1;
 
@@ -115,8 +115,8 @@ class Darkroom {
             }
         }    
 
-        //this.destField.diffuse(this.destField, 0.05, 2);
-        this.destField.diffuse(this.destField, 0.01, 1.001);
+        this.destField.diffuse(this.destField, 0.05, 2);
+        //this.destField.diffuse(this.destField, 0.002, 1.0001);
     }
     
     diffuse() {

@@ -3,23 +3,157 @@
 
 	<head>
 		<title>DeeSeventySix</title>
-		<link rel="stylesheet" type="text/css" href="./css/main.css">
+		<style>
+			body {
+				background: #aaaaaa;
+				color: #ffffff;
+				font-size: 32px;
+			}
+
+			#msg {
+				position: absolute;
+				left: 0.7em;
+				top: 0.4em;
+				z-index: 1;
+				opacity: 0.8;
+				font-style: italic;
+				font-family: "Helvetica";
+				filter: drop-shadow(5px 5px 5px #000000);			}
+		</style>
 		<script src="./js/util.js"></script>
 		<script src="./js/msg.js"></script>
 
 		<script src="./js/libraries/alife.js" defer></script>
-		<script src="./js/grain.js" defer></script>
-		<script src="./js/crystal.js" defer></script>
-		<script src="./js/emulsion.js" defer></script>
-		<script src="./js/darkroom.js" defer></script>
-		<script src="./js/controls.js" defer></script>
-		<script src="./js/ants.js" defer></script>
-		<script src="./js/flock.js" defer></script>
-		<script src="./js/main.js" defer></script>
+		<script src="./js/grain.js"></script>
+		<script src="./js/crystal.js"></script>
+		<script src="./js/emulsion.js"></script>
+		<script src="./js/darkroom.js"></script>
+		<script src="./js/controls.js"></script>
+		<script src="./js/ants.js"></script>
+		<script src="./js/flock.js"></script>
 	</head>
 
 	<body>
 		<div id="msg"></div>
+		<script>
+			"use strict";
+
+			let darkroom;  // Darkroom
+			let toggleImg = false;  
+			let isColor = false;
+			let ready;  // bool
+			let img;
+			let url  = "./images/blockbuster_mid.jpg";
+			let startTime;
+			const dim = 256;
+			const developTime = 12;
+
+			let dropZone;
+			dropZone = document.getElementsByTagName("body")[0];
+			dropZone.addEventListener('dragover', onDragOver);
+			dropZone.addEventListener('drop', onDrop);
+
+			let flock, ants;
+			let debug = false;
+
+			function map(value, low1, high1, low2, high2) {
+			    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+			}
+
+			function reset() {
+			    ready = false;
+	
+				const tempImg = new Image();
+				tempImg.src = url;
+				tempImg.onload = function() {
+					let wf = parseFloat(this.width);
+					let hf = parseFloat(this.height);
+					let w, h;
+					if (wf > hf) {
+						w = dim;
+						h = parseInt(dim * (hf / wf));
+					} else if (wf < hf) {
+						w = parseInt(dim * (wf / hf));
+						h = dim;
+					} else {
+						w = dim;
+						h = dim;
+					}
+				    img = new field2D(w, h);
+				    img.loadImage(url, function() {
+				        darkroom = new Darkroom(img, isColor);
+				                
+				        darkroom.expose();
+				        console.log("* exposed *");
+
+				        ants = new Ants(10000);
+				        flock = new Flock(200);
+
+				        startTime = util.millis();
+
+				        ready = true;
+				    });
+				}
+			}
+
+			function update(dt) {  
+			    try {  
+			        if (ready) {
+			            if (util.millis() < startTime + (developTime * 1000)) {
+			                darkroom.develop();
+			            } else {
+			                ants.update(dt);
+			                flock.update(dt);
+			            }
+			        }
+			    } catch (e) {
+			        console.log(e);
+			        window.location.reload();
+			    }
+			}
+
+			function draw(ctx) {
+			    if (ready) {
+			        if (toggleImg) {
+			            darkroom.drawSource();
+			        } else {
+			            darkroom.draw();
+			            flock.draw();
+			            if (debug) {
+			                ants.draw();
+			            }
+			        }   
+			    } 
+			}
+
+			// Show the copy icon when dragging over.  Seems to only work for chrome.
+			function onDragOver(e) {
+			    e.stopPropagation();
+			    e.preventDefault();
+			    e.dataTransfer.dropEffect = 'copy';    
+			}
+
+			function onDrop(e) {
+			    e.stopPropagation();
+			    e.preventDefault();
+			    let files = e.dataTransfer.files; // Array of all files
+			    for (let i=0, file; file=files[i]; i++) {
+			        let reader = new FileReader();
+			        reader.onload = function(e2) {
+			            //if (telidon.length >= maxLength) telidon.splice(0,1);
+			            //telidon.push(new TelidonDraw([e2.target.result], sW, sW));
+			            //recording = true;
+			            //preview.style.backgroundImage = null;
+			            url = e2.target.result;
+			            console.log("Drag drop");
+						msg.style.display = 'none';
+			            reset();
+			        }
+			        //reader.readAsText(file, 'UTF-8');
+			        reader.readAsDataURL(file);
+			    }      
+			}
+		</script>
 	</body>
 
 </html>

@@ -424,6 +424,7 @@ field2D.prototype.clear = function() {
 	return this;
 };
 
+/*
 field2D.prototype.fill = function() {
   const array = this.array;
   for (let i = 0, l = array.length; i < l; i += 4) {
@@ -434,6 +435,7 @@ field2D.prototype.fill = function() {
   }
   return this;
 };
+*/
   
 field2D.prototype.get = function(x, y) {
 	/*if (typeof x !== "number" || typeof y !== "number") {
