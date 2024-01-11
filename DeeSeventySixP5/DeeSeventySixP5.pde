@@ -1,3 +1,5 @@
+import processing.javafx.*;
+
 Darkroom darkroom;
 boolean toggleImg;
 Settings settings;
@@ -9,7 +11,7 @@ int repsCounter = 0;
 int repsCounterMax = 2000;
 
 void setup() {
-  size(50, 50, P2D);
+  size(50, 50, FX2D);
   settings = new Settings("settings.txt");
   chooseFolderDialog();
   
