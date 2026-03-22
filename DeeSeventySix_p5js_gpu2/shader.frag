@@ -65,6 +65,25 @@ vec3 voronoi(vec2 x, float scale) {
 #define PROCESS_ENERGY(energy, numCrystals, solarizeLimit) \
     ((energy) * (numCrystals) < (solarizeLimit) ? (energy) : 0.0)
 
+// Sobel edge detection to find edges in the image
+float edgeDetection(sampler2D tex, vec2 uv, vec2 resolution) {
+    vec2 offset = 1.0 / resolution;
+    
+    float t00 = dot(texture2D(tex, uv + vec2(-offset.x, -offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    float t10 = dot(texture2D(tex, uv + vec2( 0.0,      -offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    float t20 = dot(texture2D(tex, uv + vec2( offset.x, -offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    float t01 = dot(texture2D(tex, uv + vec2(-offset.x,  0.0)).rgb, vec3(0.299, 0.587, 0.114));
+    float t21 = dot(texture2D(tex, uv + vec2( offset.x,  0.0)).rgb, vec3(0.299, 0.587, 0.114));
+    float t02 = dot(texture2D(tex, uv + vec2(-offset.x,  offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    float t12 = dot(texture2D(tex, uv + vec2( 0.0,       offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    float t22 = dot(texture2D(tex, uv + vec2( offset.x,  offset.y)).rgb, vec3(0.299, 0.587, 0.114));
+    
+    float sx = -1.0 * t00 - 2.0 * t01 - 1.0 * t02 + 1.0 * t20 + 2.0 * t21 + 1.0 * t22;
+    float sy = -1.0 * t00 - 2.0 * t10 - 1.0 * t20 + 1.0 * t02 + 2.0 * t12 + 1.0 * t22;
+    
+    return sqrt(sx * sx + sy * sy);
+}
+
 void main() {
     vec2 uv = vTexCoord;
     vec3 color = texture2D(u_tex, uv).rgb;
@@ -72,8 +91,16 @@ void main() {
     // Pixel coordinates for noise
     vec2 pixelPos = floor(uv * u_resolution);
 
+    // Find edge strength at this pixel
+    float edge = edgeDetection(u_tex, uv, u_resolution);
+
+    // Disrupt Voronoi regularity near edges by jittering the UV and scaling the grain
+    vec2 jitter = vec2(hash3(pixelPos, 10.0), hash3(pixelPos, 11.0)) * 2.0 - 1.0;
+    vec2 voronoiUv = uv + jitter * edge * 0.02;
+    float localGrainScale = u_grainScale + edge * 50.0;
+
     // Get Voronoi cell for this pixel - all pixels in same cell share grain properties
-    vec3 cellInfo = voronoi(uv, u_grainScale);
+    vec3 cellInfo = voronoi(voronoiUv, localGrainScale);
     vec2 cellId = cellInfo.xy;
 
     // Grain properties derived from cell ID (shared by all crystals in grain)
@@ -84,7 +111,7 @@ void main() {
 
     if (u_isColor) {
         // Sample color at grain center for consistent energy within grain
-        vec2 grainCenter = (cellId + 0.5) / u_grainScale;
+        vec2 grainCenter = (cellId + 0.5) / localGrainScale;
         vec3 grainColor = texture2D(u_tex, clamp(grainCenter, 0.0, 1.0)).rgb;
 
         // Red channel -> Cyan dye
@@ -115,7 +142,7 @@ void main() {
         }
     } else {
         // Black and white mode
-        vec2 grainCenter = (cellId + 0.5) / u_grainScale;
+        vec2 grainCenter = (cellId + 0.5) / localGrainScale;
         vec3 grainColor = texture2D(u_tex, clamp(grainCenter, 0.0, 1.0)).rgb;
         float luma = dot(grainColor, vec3(0.299, 0.587, 0.114));
 
