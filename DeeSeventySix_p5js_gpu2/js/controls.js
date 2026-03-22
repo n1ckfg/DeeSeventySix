@@ -2,6 +2,9 @@
 
 function keyPressed() {
     switch(key) {
+        case 'c':
+            isColor = !isColor;
+            break;
         case 's':
             save("test.png");
             break;

@@ -5,6 +5,7 @@ let toggleImg;
 let vid;
 let progress = 0;
 let isVideoLoaded = false;
+let isColor = true;
 
 // Grain and solarization parameters
 let grainScale = 100.0;    // Voronoi cell density - higher = smaller grains
@@ -79,7 +80,7 @@ function draw() {
         theShader.setUniform('u_tex', vid);
         theShader.setUniform('u_resolution', [width, height]);
         theShader.setUniform('u_progress', min(progress, 1.0));
-        theShader.setUniform('u_isColor', true);
+        theShader.setUniform('u_isColor', isColor);
         theShader.setUniform('u_grainScale', grainScale);
         theShader.setUniform('u_solarizeLimit', solarizeLimit);
         theShader.setUniform('u_frame', float(frameCount));
