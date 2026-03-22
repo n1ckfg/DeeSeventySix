@@ -85,6 +85,12 @@ function draw() {
         theShader.setUniform('u_frame', float(frameCount));
         shaderBuffer.rect(-width/2, -height/2, width, height);
 
+        // Fade existing accumulation towards white to prevent blacking out
+        accumBuffer.blendMode(BLEND);
+        accumBuffer.noStroke();
+        accumBuffer.fill(255, 127); // 50% opacity white
+        accumBuffer.rect(0, 0, width, height);
+
         // Multiply new exposure onto accumulation buffer (darkens over time)
         accumBuffer.blendMode(MULTIPLY);
         accumBuffer.image(shaderBuffer, 0, 0);
