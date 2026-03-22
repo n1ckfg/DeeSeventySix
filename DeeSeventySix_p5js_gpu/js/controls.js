@@ -25,7 +25,7 @@ function keyPressed() {
             console.log("solarizeLimit: " + solarizeLimit);
             break;
         case 'r':
-            progress = 0;
+            resetAccumulator();
             break;
     }
 }

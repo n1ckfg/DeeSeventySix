@@ -10,6 +10,7 @@ uniform float u_progress;
 uniform bool u_isColor;
 uniform float u_grainScale;      // Controls Voronoi cell size (grain clump size)
 uniform float u_solarizeLimit;   // Threshold for overexposure/solarization effect
+uniform float u_frame;           // Frame counter for temporal variation
 
 // Basic hash function
 float hash(vec2 p) {
@@ -18,9 +19,9 @@ float hash(vec2 p) {
     return fract(p.x * p.y);
 }
 
-// Hash with channel offset
+// Hash with channel and frame offset - varies each frame for accumulation
 float hash3(vec2 p, float c) {
-    return hash(p + vec2(c * 13.1, c * 17.7));
+    return hash(p + vec2(c * 13.1 + u_frame * 0.1, c * 17.7 + u_frame * 0.07));
 }
 
 // 2D hash returning vec2 for Voronoi cell centers
